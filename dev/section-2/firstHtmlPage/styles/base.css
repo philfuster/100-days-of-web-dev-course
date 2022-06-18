@@ -1,17 +1,15 @@
 body {
   text-align: center;
   background-color: hsl(18, 37%, 86%);
-  margin: 50px;
+  color: hsl(36, 86%, 40%);
 }
 
 h1 {
   font-family: "Oswald", sans-serif;
-  color: hsl(36, 86%, 40%);
 }
 
 p {
   font-family: "Fira Sans", sans-serif;
-  color: hsl(80, 40%, 50%);
 }
 
 a {
