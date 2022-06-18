@@ -1,7 +1,7 @@
 body {
   text-align: center;
-  background-color: hsl(18, 37%, 86%);
-  color: hsl(36, 86%, 40%);
+  background-color: rgb(233, 214, 206);
+  color: rgb(83, 75, 75);
 }
 
 h1 {
@@ -15,10 +15,9 @@ p {
 a {
   font-family: "Fira Sans", sans-serif;
   text-decoration: none;
-  color: hsl(160, 50%, 50%);
+  color: rgb(167, 1, 78);
 }
 
 a:hover {
-  color: hsl(100, 50%, 40%);
   text-decoration: underline;
 }
