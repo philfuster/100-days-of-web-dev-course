@@ -1,0 +1,27 @@
+h1 {
+  font-family: 'Oswald', sans-serif;
+  text-align: center;
+  color: hsl(90, 5%, 31%);
+}
+
+p {
+  font-family: 'Fira Sans', sans-serif;
+  text-align: center;
+  color: hsl(90, 5%, 31%);
+}
+
+a {
+  color: hsl(303, 71%, 35%);
+  text-decoration: none;
+}
+
+a:hover {
+  color: hsl(302, 43%, 24%);
+  text-decoration: underline;
+}
+
+#todays-challenge {
+    color: hsl(9, 34%, 50%);
+    font-weight: bold;
+    font-size: 52px;
+}
