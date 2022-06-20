@@ -1,7 +1,7 @@
 h1 {
   font-size: 3rem;
   color: rgb(71, 62, 62);
-  margin: 12px 0;
+  margin: 0;
 }
 
 a {
@@ -11,6 +11,8 @@ a {
   border: 1px solid rgb(167, 1, 78);
   border-radius: 4px;
   font-size: 1.5rem;
+  display: inline-block;
+  margin: 0;
 }
 
 /* header p {
@@ -22,7 +24,7 @@ a {
  of introducing an id. Just wanted to target the element in a different way.
 */
 #description {
-  margin-bottom: 36px;
+  margin: 12px 0;
 }
 
 a:hover {
@@ -39,6 +41,7 @@ ol {
 
 li {
   padding: 16px;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
   margin: 32px;
   background-color: rgb(223, 135, 124);
   border-radius: 6px;
