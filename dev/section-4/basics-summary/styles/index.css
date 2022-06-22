@@ -10,21 +10,16 @@ header {
   color: rgb(93, 51, 199);
   font-size: 24px;
   text-align: center;
+  padding: 32px;
 }
 
-img {
-  height: 150px;
-  width: 250px;
+header img {
+  width: 300px;
   display: inline-block;
-  margin-bottom: 50px;
-}
-
-.strong {
-  font-weight: 700;
 }
 
 main {
-  margin: auto;
+  margin: 32px auto;
   width: 700px;
   background-color: rgb(119, 74, 216);
   border-radius: 8px;
@@ -37,6 +32,11 @@ a {
   font-weight: 700;
 }
 
+a:hover,
+a:active {
+  background-color: rgb(250, 201, 39);
+}
+
 section a {
   color: rgb(40, 9, 48);
   font-weight: 700;
@@ -47,11 +47,11 @@ section a {
 
 ul {
   margin: 0;
-  padding-left: 0;
+  padding: 0;
+  list-style: none;
 }
 
 li {
-  list-style: none;
   padding-left: 10px;
   margin-bottom: 10px;
 }
@@ -74,6 +74,10 @@ footer a {
   display: inline-block;
 }
 
+footer a:hover,
+footer a:active {
+  background-color: rgb(255, 186, 58);
+}
 footer p {
   color: rgb(122, 108, 134);
   margin: 0;
