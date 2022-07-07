@@ -3,6 +3,17 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+h1 {
+  text-align: center;
+  color: white;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 form {
   width: 30rem;
   margin: 3rem auto;
@@ -25,6 +36,10 @@ input, textarea, select {
   border: 1px solid rgb(184, 184, 184);
   padding: 0.25rem;
   color: rgb(61, 58, 58);
+}
+
+textarea {
+  resize: vertical;
 }
 
 input:focus, textarea:focus {
