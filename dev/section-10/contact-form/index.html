@@ -18,7 +18,7 @@
       <h1>Contact Us</h1>
     </header>
     <main>
-      <form action="/" method="POST">
+      <form action="/" method="GET">
         <section>
           <h2>How can we help you?</h2>
           <ul>
@@ -33,25 +33,33 @@
             <li>
               <label for="user-phonenumber">Your Phone Number</label>
               <input
-                type="number"
+                type="tel"
                 id="user-phonenumber"
                 name="phonenumber"
+                minlength="5"
                 required
               />
             </li>
             <li>
               <label for="user-message">Your Message</label>
-              <textarea name="usermessage" id="user-message" rows="5"></textarea>
-            </li>
-            <li>
-              <label for="find-method">How did you Find us?</label>
-              <select name="findmethod" id="find-method">
-                <option value="web">Web Search</option>
-                <option value="mouth">Word of Mouth</option>
-                <option value="other">Other</option>
-              </select>
+              <textarea
+                name="usermessage"
+                id="user-message"
+                rows="5"
+                minlength="10"
+                maxlength="200"
+                required
+              ></textarea>
             </li>
           </ul>
+        </section>
+        <section>
+          <label for="find-method">How did you Find us?</label>
+          <select name="findmethod" id="find-method" required>
+            <option value="web">Web Search</option>
+            <option value="mouth">Word of Mouth</option>
+            <option value="other">Other</option>
+          </select>
         </section>
         <section>
           <h2>How should we reply?</h2>
@@ -77,14 +85,14 @@
         </section>
         <section id="terms-section">
           <div class="form-control-line">
-            <input type="checkbox" name="terms" id="terms" />
+            <input type="checkbox" name="terms" id="terms" required />
             <label for="terms">Accept Terms</label>
           </div>
         </section>
         <section id="actions">
           <ul>
-            <li><button type="reset">Clear</button></li>
-            <li><button type="submit">Submit</button></li>
+            <li><button type="reset" class="btn-empty">Clear</button></li>
+            <li><button type="submit" class="btn-filled">Submit</button></li>
           </ul>
         </section>
       </form>
