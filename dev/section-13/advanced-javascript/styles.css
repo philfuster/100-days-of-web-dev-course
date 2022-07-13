@@ -61,9 +61,17 @@ button:hover {
 }
 
 form input.warning {
-  background-color: rgb(240, 135, 135);
+  background-color: rgb(211, 128, 20);
 }
 
 #remaining-chars.warning {
+  color: rgb(211, 128, 20);
+}
+
+form input.error {
+  background-color: rgb(240, 135, 135);
+}
+
+#remaining-chars.error {
   color: rgb(240, 135, 135);
 }
