@@ -3,12 +3,12 @@
   <div class="actions">
     <ul>
       <li>
-        <form action="/admin/<%= post._id %>/edit" method="GET">
+        <form action="/posts/<%= post._id %>/edit" method="GET">
           <button class="btn">View & Edit</button>
         </form>
       </li>
       <li>
-        <form action="/admin/<%= post._id %>/delete" method="POST">
+        <form action="/posts/<%= post._id %>/delete" method="POST">
           <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
           <button class="btn btn-alt">Delete</button>
         </form>

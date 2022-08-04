@@ -22,9 +22,8 @@ router.get("/signup", function (req, res) {
 	}
 
 	req.session.inputData = null;
-	const csrfToken = req.csrfToken();
 
-	res.render("signup", { inputData: sessionInputData, csrfToken });
+	res.render("signup", { inputData: sessionInputData, csrfToken: req.csrfToken() });
 });
 
 router.get("/login", function (req, res) {
@@ -40,9 +39,8 @@ router.get("/login", function (req, res) {
 	}
 
 	req.session.inputData = null;
-	const csrfToken = req.csrfToken();
 
-	res.render("login", { inputData: sessionInputData, csrfToken });
+	res.render("login", { inputData: sessionInputData, csrfToken: req.csrfToken() });
 });
 
 router.post("/signup", async function (req, res) {
@@ -162,23 +160,24 @@ router.get("/admin", async function (req, res) {
 	req.session.inputData = null;
 
 	const posts = await db.getDb().collection("posts").find({}).toArray();
+
 	res.render("admin", { inputData: sessionInputData, posts });
 });
 
-router.post("/admin", async function (req, res) {
+router.post("/posts", async function (req, res) {
 	if (!res.locals.isAuth) {
 		return res.status(401).render("401");
 	}
 	const { title, content } = req.body;
 	if (
 		title == null ||
-		title.length < 1 ||
+		title.trim().length < 1 ||
 		content == null ||
-		content.length < 1
+		content.trim().length < 1
 	) {
 		req.session.inputData = {
 			hasError: true,
-			message: "Invalid input - please check your data.",
+			errorMessage: "Invalid input - please check your data.",
 			title,
 			content,
 		};
@@ -196,43 +195,44 @@ router.post("/admin", async function (req, res) {
 	res.redirect("/admin");
 });
 
-router.get("/admin/:id/edit", async function (req, res) {
+router.get("/posts/:id/edit", async function (req, res) {
 	if (!res.locals.isAuth) {
 		return res.status(401).render("401");
 	}
+	const postId = new ObjectId(req.params.id);
+
 	let sessionInputData = req.session.inputData;
+	const post = await db
+		.getDb()
+		.collection("posts")
+		.findOne({ _id: postId });
 
 	if (!sessionInputData) {
 		sessionInputData = {
 			hasError: false,
+			title: post.title,
+			content: post.content
 		};
 	}
 
-	const { id } = req.params;
 	req.session.inputData = null;
 
-	const existingPost = await db
-		.getDb()
-		.collection("posts")
-		.findOne({ _id: ObjectId(id) });
-	if (existingPost == null) {
+
+	if (post == null) {
 		return res.status(400).render("400");
 	}
-	sessionInputData = { ...sessionInputData, ...existingPost };
-	res.render("adminDetail", { inputData: sessionInputData });
+
+	res.render("single-post", { inputData: sessionInputData, post});
 });
 
-router.post("/admin/:id/edit", async function (req, res) {
-	if (!res.locals.isAuth) {
-		return res.status(401).render("401");
-	}
+router.post("/posts/:id/edit", async function (req, res) {
 	const { title, content } = req.body;
-	const { id } = req.params;
+	const postId = new ObjectId(req.params.id);
 	if (
 		title == null ||
-		title.length < 1 ||
+		title.trim().length < 1 ||
 		content == null ||
-		content.length < 1
+		content.trim().length < 1
 	) {
 		req.session.inputData = {
 			hasError: true,
@@ -241,7 +241,7 @@ router.post("/admin/:id/edit", async function (req, res) {
 			content,
 		};
 		req.session.save(function () {
-			return res.redirect("/admin");
+			return res.redirect(`/posts/${req.params.id}/edit`);
 		});
 		return;
 	}
@@ -249,7 +249,7 @@ router.post("/admin/:id/edit", async function (req, res) {
 		.getDb()
 		.collection("posts")
 		.updateOne(
-			{ _id: ObjectId(id) },
+			{ _id: postId },
 			{
 				$set: {
 					title,
@@ -260,15 +260,15 @@ router.post("/admin/:id/edit", async function (req, res) {
 	res.redirect("/admin");
 });
 
-router.post("/admin/:id/delete", async function (req, res) {
+router.post("/posts/:id/delete", async function (req, res) {
 	if (!res.locals.isAuth) {
 		return res.status(401).render("401");
 	}
-	const { id } = req.params;
+	const postId = new ObjectId(req.params.id);
 	const existingPost = await db
 		.getDb()
 		.collection("posts")
-		.findOne({ _id: ObjectId(id) });
+		.findOne({ _id: postId });
 
 	if (existingPost == null) {
 		return res.status(400).render("400");
@@ -277,14 +277,12 @@ router.post("/admin/:id/delete", async function (req, res) {
 	await db
 		.getDb()
 		.collection("posts")
-		.deleteOne({ _id: ObjectId(id) });
-		res.redirect('/admin')
+		.deleteOne({ _id: postId });
+
+	res.redirect("/admin");
 });
 
 router.post("/logout", function (req, res) {
-	if (!res.locals.isAuth) {
-		return res.status(401).render("401");
-	}
 	req.session.user = null;
 	req.session.isAuthenticated = false;
 	res.locals.csrfToken = null;

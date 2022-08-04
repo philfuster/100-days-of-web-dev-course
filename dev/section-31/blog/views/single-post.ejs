@@ -1,0 +1,19 @@
+<%- include('includes/head.ejs', { title: 'Blog Post Detail' }) %>
+<link rel="stylesheet" href="/styles/auth.css">
+<link rel="stylesheet" href="/styles/forms.css">
+<link rel="stylesheet" href="/styles/admin.css">
+</head>
+  <body>
+    <%- include('includes/header.ejs') %>
+    <main>
+      <%- include('includes/post-form', {
+        submitUrl: '/posts/' + post._id + '/edit',
+        hasError: inputData.hasError,
+        errorMessage: inputData.errorMessage,
+        title: inputData.title,
+        content: inputData.content
+      })
+      %>
+    </main>
+  </body>
+</html>
