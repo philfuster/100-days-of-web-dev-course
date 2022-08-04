@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('../data/database');
 const bcrypt = require('bcryptjs');
+const { ObjectId } = require('mongodb');
+
 
 const router = express.Router();
 
@@ -136,7 +138,7 @@ router.post('/login', async function (req, res) {
 });
 
 
-router.get('/admin', function (req, res) {
+router.get('/admin', async function (req, res) {
 	if (!res.locals.isAuth) {
 		return res.status(401).render('401');
 	}
@@ -151,15 +153,81 @@ router.get('/admin', function (req, res) {
 	}
 
 	req.session.inputData = null;
-	const csrfToken = req.csrfToken();
-	res.render('admin', { inputData: sessionInputData, posts: [], csrfToken });
+
+	const posts = await db.getDb().collection('posts').find({}).toArray();
+	res.render('admin', { inputData: sessionInputData, posts });
 });
 
+router.post('/admin', async function (req, res) {
+	if (!res.locals.isAuth) {
+		return res.status(401).render('401');
+	}
+	const { title, content } = req.body;
+	if (
+		title == null ||
+		title.length < 1 ||
+		content == null ||
+		content.length < 1
+	) {
+		req.session.inputData = {
+			hasError: true,
+			message: 'Invalid input - please check your data.',
+			title,
+			content
+		};
+		req.session.save(function () {
+			return res.redirect('/admin');
+		});
+		return;
+	}
+
+	await db.getDb().collection('posts').insertOne({
+		title,
+		content
+	});
+
+	res.redirect('/admin')
+})
+
+router.get('/admin/:id/posts', async function (req, res) {
+	if (!res.locals.isAuth) {
+		return res.status(401).render('401');
+	}
+	const { title, content, id } = req.body;
+	if (
+		title == null ||
+		title.length < 1 ||
+		content == null ||
+		content.length < 1
+	) {
+		req.session.inputData = {
+			hasError: true,
+			message: 'Invalid input - please check your data.',
+			title,
+			content
+		};
+		req.session.save(function () {
+			return res.redirect('/admin');
+		});
+		return;
+	}
+	const existingPost = await db.getDb().collection('posts').findOne({_id: ObjectId(id) });
+	console.log(existingPost);
+	if (existingPost == null) {
+		res.status(400).render('400');
+	}
+	await db.getDb().collection('posts').updateOne({_id: ObjectId(id)}, { $set: {
+		title,
+		content
+	}});
+
+	res.redirect('/admin')
+})
+
 router.post('/logout', function (req, res) {
-	// console.log('object');
-	// req.session.user = null;
-	// req.session.isAuthenticated = false;
-	console.log('wtf');
+	req.session.user = null;
+	req.session.isAuthenticated = false;
+	res.locals.csrfToken = null;
 	res.redirect("/");
 });
 

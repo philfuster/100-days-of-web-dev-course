@@ -44,6 +44,7 @@ app.use(function(req, res, next) {
 	}
 	res.locals.isAuth = isAuth;
 	res.locals.user = user;
+	res.locals.csrfToken = req.csrfToken();
 	next();
 })
 

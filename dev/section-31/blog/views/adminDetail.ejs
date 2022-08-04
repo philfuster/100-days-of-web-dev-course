@@ -1,4 +1,4 @@
-<%- include('includes/head.ejs', { title: 'Blog Post Administration' }) %>
+<%- include('includes/head.ejs', { title: 'Blog Post Detail' }) %>
 <link rel="stylesheet" href="/styles/auth.css">
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/admin.css">
@@ -6,13 +6,11 @@
   <body>
     <%- include('includes/header.ejs') %>
     <main>
-      <h1>Administrate Blog Posts</h1>
       <section>
-        <h2>Create a New Post</h2>
         <% if(inputData.hasError) { %>
           <p id="input-error"><%= inputData.message %></p>
         <% } %>
-        <form action="/admin" method="POST">
+        <form action="/admin/:id/posts" data-postid="<%= post._id%>" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <div class="form-control">
             <label for="title">Title</label>
@@ -24,17 +22,6 @@
           </div>
           <button class="btn">Save</button>
         </form>
-      </section>
-      <section>
-        <h2>All Blog Posts</h2>
-        <% if (posts == null || posts.length == 0) { %>
-          <p>Could not find any posts. You need to first create some!</p>
-        <% } else { %>
-          <% for(const post in posts) { %>
-            <p>y33t</p>
-          <% } %>
-        <% } %>
-      </section>
     </main>
   </body>
 </html>
