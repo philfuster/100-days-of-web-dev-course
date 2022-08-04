@@ -7,7 +7,7 @@
     <%- include('includes/header.ejs') %>
     <main>
       <%- include('includes/post-form', {
-        submitUrl: '/posts/' + post._id + '/edit',
+        submitUrl: '/posts/' + post.id + '/edit',
         hasError: inputData.hasError,
         errorMessage: inputData.errorMessage,
         title: inputData.title,

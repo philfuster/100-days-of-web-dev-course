@@ -10,7 +10,7 @@
         <p id="input-error"><%= inputData.message %></p>
       <% } %>
       <form action="/signup" method="POST">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
         <div class="form-control">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" placeholder="Email" required />
@@ -26,7 +26,7 @@
         <button class="btn">Sign Up</button>
       </form>
       <div id="auth-alternative">
-        <a class="btn btn-alt" href="/signup">Login instead</a>
+        <a class="btn btn-alt" href="/login">Login instead</a>
       </div>
     </main>
   </body>
