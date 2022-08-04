@@ -1,85 +1,87 @@
-const express = require('express');
-const db = require('../data/database');
-const bcrypt = require('bcryptjs');
-const { ObjectId } = require('mongodb');
-
+const express = require("express");
+const db = require("../data/database");
+const bcrypt = require("bcryptjs");
+const { ObjectId } = require("mongodb");
 
 const router = express.Router();
 
-router.get('/', function (req, res) {
-	res.render('index');
+router.get("/", function (req, res) {
+	res.render("index");
 });
 
-router.get('/signup', function (req, res) {
+router.get("/signup", function (req, res) {
 	let sessionInputData = req.session.inputData;
 
 	if (!sessionInputData) {
 		sessionInputData = {
 			hasError: false,
-			email: '',
-			confirmEmail: '',
-			password: '',
+			email: "",
+			confirmEmail: "",
+			password: "",
 		};
 	}
 
 	req.session.inputData = null;
 	const csrfToken = req.csrfToken();
 
-	res.render('signup', { inputData: sessionInputData, csrfToken });
+	res.render("signup", { inputData: sessionInputData, csrfToken });
 });
 
-router.get('/login', function (req, res) {
+router.get("/login", function (req, res) {
 	let sessionInputData = req.session.inputData;
 
 	if (!sessionInputData) {
 		sessionInputData = {
 			hasError: false,
-			email: '',
-			confirmEmail: '',
-			password: '',
+			email: "",
+			confirmEmail: "",
+			password: "",
 		};
 	}
 
 	req.session.inputData = null;
 	const csrfToken = req.csrfToken();
 
-	res.render('login', { inputData: sessionInputData, csrfToken });
+	res.render("login", { inputData: sessionInputData, csrfToken });
 });
 
-router.post('/signup', async function (req, res) {
+router.post("/signup", async function (req, res) {
 	const { email, password } = req.body;
-	const confirmEmail = req.body['confirm-email'];
+	const confirmEmail = req.body["confirm-email"];
 	if (
 		email == null ||
 		confirmEmail == null ||
 		password == null ||
 		password.trim().length < 6 ||
 		email !== confirmEmail ||
-		!email.includes('@')
+		!email.includes("@")
 	) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'Invalid input - please check your data.',
+			message: "Invalid input - please check your data.",
 			email,
 			confirmEmail,
 			password,
 		};
 		req.session.save(function () {
-			return res.redirect('/signup');
+			return res.redirect("/signup");
 		});
 		return;
 	}
-	const existingUser = await db.getDb().collection('users').findOne({ email: email });
+	const existingUser = await db
+		.getDb()
+		.collection("users")
+		.findOne({ email: email });
 	if (existingUser != null) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'User exists already!',
+			message: "User exists already!",
 			email,
 			confirmEmail,
 			password,
 		};
 		req.session.save(function () {
-			return res.redirect('/signup');
+			return res.redirect("/signup");
 		});
 		return;
 	}
@@ -91,39 +93,45 @@ router.post('/signup', async function (req, res) {
 		password: hashedPassword,
 	};
 
-	await db.getDb().collection('users').insertOne(newUser);
+	await db.getDb().collection("users").insertOne(newUser);
 
-	res.redirect('/login');
+	res.redirect("/login");
 });
 
-router.post('/login', async function (req, res) {
+router.post("/login", async function (req, res) {
 	const { email, password } = req.body;
 
-	const existingUser = await db.getDb().collection('users').findOne({ email: email });
+	const existingUser = await db
+		.getDb()
+		.collection("users")
+		.findOne({ email: email });
 	if (existingUser == null) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'Could not log you in - please check your credentials!',
+			message: "Could not log you in - please check your credentials!",
 			email: email,
 			password: password,
 		};
 		req.session.save(function () {
-			return res.redirect('/login');
+			return res.redirect("/login");
 		});
 		return;
 	}
 
-	const passwordsAreEqual = await bcrypt.compare(password, existingUser.password);
+	const passwordsAreEqual = await bcrypt.compare(
+		password,
+		existingUser.password
+	);
 
 	if (!passwordsAreEqual) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'Could not log you in - please check your credentials!',
+			message: "Could not log you in - please check your credentials!",
 			email,
 			password,
 		};
 		req.session.save(function () {
-			return res.redirect('/login');
+			return res.redirect("/login");
 		});
 		return;
 	}
@@ -133,34 +141,33 @@ router.post('/login', async function (req, res) {
 	};
 	req.session.isAuthenticated = true;
 	req.session.save(function () {
-		res.redirect('/admin');
+		res.redirect("/admin");
 	});
 });
 
-
-router.get('/admin', async function (req, res) {
+router.get("/admin", async function (req, res) {
 	if (!res.locals.isAuth) {
-		return res.status(401).render('401');
+		return res.status(401).render("401");
 	}
 	let sessionInputData = req.session.inputData;
 
 	if (!sessionInputData) {
 		sessionInputData = {
 			hasError: false,
-			title: '',
-			content: '',
+			title: "",
+			content: "",
 		};
 	}
 
 	req.session.inputData = null;
 
-	const posts = await db.getDb().collection('posts').find({}).toArray();
-	res.render('admin', { inputData: sessionInputData, posts });
+	const posts = await db.getDb().collection("posts").find({}).toArray();
+	res.render("admin", { inputData: sessionInputData, posts });
 });
 
-router.post('/admin', async function (req, res) {
+router.post("/admin", async function (req, res) {
 	if (!res.locals.isAuth) {
-		return res.status(401).render('401');
+		return res.status(401).render("401");
 	}
 	const { title, content } = req.body;
 	if (
@@ -171,29 +178,56 @@ router.post('/admin', async function (req, res) {
 	) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'Invalid input - please check your data.',
+			message: "Invalid input - please check your data.",
 			title,
-			content
+			content,
 		};
 		req.session.save(function () {
-			return res.redirect('/admin');
+			return res.redirect("/admin");
 		});
 		return;
 	}
 
-	await db.getDb().collection('posts').insertOne({
+	await db.getDb().collection("posts").insertOne({
 		title,
-		content
+		content,
 	});
 
-	res.redirect('/admin')
-})
+	res.redirect("/admin");
+});
 
-router.get('/admin/:id/posts', async function (req, res) {
+router.get("/admin/:id/edit", async function (req, res) {
 	if (!res.locals.isAuth) {
-		return res.status(401).render('401');
+		return res.status(401).render("401");
 	}
-	const { title, content, id } = req.body;
+	let sessionInputData = req.session.inputData;
+
+	if (!sessionInputData) {
+		sessionInputData = {
+			hasError: false,
+		};
+	}
+
+	const { id } = req.params;
+	req.session.inputData = null;
+
+	const existingPost = await db
+		.getDb()
+		.collection("posts")
+		.findOne({ _id: ObjectId(id) });
+	if (existingPost == null) {
+		return res.status(400).render("400");
+	}
+	sessionInputData = { ...sessionInputData, ...existingPost };
+	res.render("adminDetail", { inputData: sessionInputData });
+});
+
+router.post("/admin/:id/edit", async function (req, res) {
+	if (!res.locals.isAuth) {
+		return res.status(401).render("401");
+	}
+	const { title, content } = req.body;
+	const { id } = req.params;
 	if (
 		title == null ||
 		title.length < 1 ||
@@ -202,29 +236,55 @@ router.get('/admin/:id/posts', async function (req, res) {
 	) {
 		req.session.inputData = {
 			hasError: true,
-			message: 'Invalid input - please check your data.',
+			message: "Invalid input - please check your data.",
 			title,
-			content
+			content,
 		};
 		req.session.save(function () {
-			return res.redirect('/admin');
+			return res.redirect("/admin");
 		});
 		return;
 	}
-	const existingPost = await db.getDb().collection('posts').findOne({_id: ObjectId(id) });
-	console.log(existingPost);
-	if (existingPost == null) {
-		res.status(400).render('400');
+	await db
+		.getDb()
+		.collection("posts")
+		.updateOne(
+			{ _id: ObjectId(id) },
+			{
+				$set: {
+					title,
+					content,
+				},
+			}
+		);
+	res.redirect("/admin");
+});
+
+router.post("/admin/:id/delete", async function (req, res) {
+	if (!res.locals.isAuth) {
+		return res.status(401).render("401");
 	}
-	await db.getDb().collection('posts').updateOne({_id: ObjectId(id)}, { $set: {
-		title,
-		content
-	}});
+	const { id } = req.params;
+	const existingPost = await db
+		.getDb()
+		.collection("posts")
+		.findOne({ _id: ObjectId(id) });
 
-	res.redirect('/admin')
-})
+	if (existingPost == null) {
+		return res.status(400).render("400");
+	}
 
-router.post('/logout', function (req, res) {
+	await db
+		.getDb()
+		.collection("posts")
+		.deleteOne({ _id: ObjectId(id) });
+		res.redirect('/admin')
+});
+
+router.post("/logout", function (req, res) {
+	if (!res.locals.isAuth) {
+		return res.status(401).render("401");
+	}
 	req.session.user = null;
 	req.session.isAuthenticated = false;
 	res.locals.csrfToken = null;

@@ -10,7 +10,7 @@
         <% if(inputData.hasError) { %>
           <p id="input-error"><%= inputData.message %></p>
         <% } %>
-        <form action="/admin/:id/posts" data-postid="<%= post._id%>" method="POST">
+        <form action="/admin/<%= inputData._id%>/edit" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <div class="form-control">
             <label for="title">Title</label>

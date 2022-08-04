@@ -30,8 +30,8 @@
         <% if (posts == null || posts.length == 0) { %>
           <p>Could not find any posts. You need to first create some!</p>
         <% } else { %>
-          <% for(const post in posts) { %>
-            <p>y33t</p>
+          <% for(const post of posts) { %>
+            <%- include("includes/post-item.ejs", { post: post }) %>
           <% } %>
         <% } %>
       </section>

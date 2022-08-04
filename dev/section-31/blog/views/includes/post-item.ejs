@@ -1,0 +1,18 @@
+<div class="post-item-detail">
+  <h3><%= post.title %></h3>
+  <div class="actions">
+    <ul>
+      <li>
+        <form action="/admin/<%= post._id %>/edit" method="GET">
+          <button class="btn">View & Edit</button>
+        </form>
+      </li>
+      <li>
+        <form action="/admin/<%= post._id %>/delete" method="POST">
+          <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+          <button class="btn btn-alt">Delete</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>

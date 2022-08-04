@@ -13,6 +13,13 @@ main {
 	text-align: center;
 }
 
+ul,
+li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
 a {
 	color: rgb(70, 0, 128);
 }
