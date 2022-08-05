@@ -26,32 +26,55 @@ class User {
 
 	async fetchByEmail() {
 		const user = await db.getDb().collection("users").findOne({email: this.email});
+		if (user == null) return;
+
 		this.id = user._id;
 		this.password = user.password;
 	}
 
-	async save() {
-		let result;
+	async create() {
 		const hashedPassword = await bcrypt.hash(this.password, 12);
-		if (this.id) {
-			// id exists already. Updating the fields.
-			result = await db.getDb().collection("users").updateOne(
-				{
-					_id: this.id,
-				},
-				{
-					$set: {
-						email: this.email,
-						password: hashedPassword,
-					}
+		this.password = hashedPassword;
+
+		const result = await db.getDb().collection("users").insertOne({
+			email: this.email,
+			password: hashedPassword
+		})
+		return result;
+	}
+
+	async updatePassword(){
+		const hashedPassword = await bcrypt.hash(this.password, 12);
+		if (this.id == null) return;
+		result = await db.getDb().collection("users").updateOne(
+			{
+				_id: this.id,
+			},
+			{
+				$set: {
+					password: hashedPassword,
 				}
-			)
-		} else {
-			result = await db.getDb().collection("users").insertOne({
-				email: this.email,
-				password: hashedPassword,
-			});
-		}
+			}
+		)
+	}
+
+	async updateEmail() {
+		if (this.id == null) return;
+		result = await db.getDb().collection("users").updateOne(
+			{
+				_id: this.id,
+			},
+			{
+				$set: {
+					email: this.email,
+				}
+			}
+		)
+	}
+
+	async comparePassword(enteredPassword) {
+		if (this.password == null) return false;
+		const result = await bcrypt.compare(enteredPassword, this.password);
 		return result;
 	}
 
@@ -59,7 +82,7 @@ class User {
 		if (!this.id) {
 			return;
 		}
-		const result = await db.getDb().collection("posts").deleteOne({
+		const result = await db.getDb().collection("users").deleteOne({
 			_id: this.id,
 		})
 		return result;
