@@ -5,12 +5,9 @@ const bcrypt = require("bcryptjs");
 const { ObjectId } = mongodb;
 
 class User {
-	constructor(email, password, id) {
+	constructor(email, password) {
 		this.email = email;
 		this.password = password;
-		if (id) {
-			this.id = new ObjectId(id);
-		}
 	}
 
 	static async fetchAll() {
@@ -18,18 +15,18 @@ class User {
 		return users;
 	}
 
-	async fetch() {
-		const user = await db.getDb().collection("users").findOne({_id: this.id});
-		this.email = user.email;
-		this.password = user.password;
+	async getUserWithSameEmail() {
+		const existingUser = await db.getDb().collection("users").findOne({email: this.email});
+		return existingUser;
 	}
 
-	async fetchByEmail() {
-		const user = await db.getDb().collection("users").findOne({email: this.email});
-		if (user == null) return;
-
-		this.id = user._id;
-		this.password = user.password;
+	async existsAlready() {
+		const existingUser = this.getUserWithSameEmail();
+		if (existingUser) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	async create() {
@@ -41,35 +38,6 @@ class User {
 			password: hashedPassword
 		})
 		return result;
-	}
-
-	async updatePassword(){
-		const hashedPassword = await bcrypt.hash(this.password, 12);
-		if (this.id == null) return;
-		result = await db.getDb().collection("users").updateOne(
-			{
-				_id: this.id,
-			},
-			{
-				$set: {
-					password: hashedPassword,
-				}
-			}
-		)
-	}
-
-	async updateEmail() {
-		if (this.id == null) return;
-		result = await db.getDb().collection("users").updateOne(
-			{
-				_id: this.id,
-			},
-			{
-				$set: {
-					email: this.email,
-				}
-			}
-		)
 	}
 
 	async comparePassword(enteredPassword) {

@@ -29,7 +29,7 @@ function getLogin(req, res) {
 async function createUser(req, res) {
 	const { email, password } = req.body;
 	const confirmEmail = req.body["confirm-email"];
-	if (!validation.userIsValid(email, confirmEmail, password)) {
+	if (!validation.userCredentialsAreValid(email, confirmEmail, password)) {
 		validationSession.flashErrorsToSession(
 			req,
 			{
@@ -46,9 +46,8 @@ async function createUser(req, res) {
 	}
 
 	const user = new User(email, null, null);
-	await user.fetchByEmail();
-
-	if (user.id != null) {
+	const existsAlready = await user.existsAlready();
+	if (existsAlready) {
 		validationSession.flashErrorsToSession(
 			req,
 			{
@@ -64,7 +63,6 @@ async function createUser(req, res) {
 		return;
 	}
 	user.password = password;
-	user.email = email;
 	await user.create();
 
 	res.redirect("/login");
@@ -73,9 +71,9 @@ async function createUser(req, res) {
 async function loginUser(req, res) {
 	const { email: enteredEmail, password: enteredPassword } = req.body;
 
-	const existingUser = new User(enteredEmail, null, null);
-	await existingUser.fetchByEmail();
-	if (existingUser.id == null ) {
+	const user = new User(enteredEmail, enteredPassword);
+	const existingUser = await user.getUserWithSameEmail();
+	if (!existingUser) {
 		validationSession.flashErrorsToSession(
 			req,
 			{
@@ -90,7 +88,7 @@ async function loginUser(req, res) {
 		return;
 	}
 
-	const passwordsAreEqual = existingUser.comparePassword(enteredPassword);
+	const passwordsAreEqual = user.comparePassword(enteredPassword);
 	if (!passwordsAreEqual) {
 		validationSession.flashErrorsToSession(
 			req,
@@ -114,15 +112,22 @@ async function loginUser(req, res) {
 		res.redirect("/admin");
 	});
 }
+
 function logoutUser(req, res) {
 	req.session.user = null;
 	req.session.isAuthenticated = false;
 	res.redirect("/");
 }
+
+function get401(req, res) {
+	res.status(401).render('401');
+}
+
 module.exports = {
 	createUser: createUser,
 	getLogin: getLogin,
 	getSignup: getSignup,
 	loginUser: loginUser,
 	logoutUser: logoutUser,
+	get401: get401,
 }

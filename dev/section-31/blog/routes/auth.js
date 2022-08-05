@@ -1,6 +1,9 @@
 const express = require("express");
 const authController = require("../controllers/auth-controller");
+const guardRoute = require("../middlewares/auth-protection-middleware");
 const router = express.Router();
+
+router.get('/401', authController.get401);
 
 router.get("/signup", authController.getSignup);
 

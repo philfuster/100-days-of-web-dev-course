@@ -7,7 +7,7 @@ function postIsValid(title, content) {
 	);
 }
 
-function userIsValid(email, confirmEmail, password) {
+function userCredentialsAreValid(email, confirmEmail, password) {
 	return (
     email &&
     confirmEmail &&
@@ -15,11 +15,13 @@ function userIsValid(email, confirmEmail, password) {
     email.trim() !== '' &&
     confirmEmail.trim() !== '' &&
     password.trim() !== '' &&
-    password.trim().length >= 6
+    password.trim().length >= 6 &&
+		email === confirmEmail &&
+		email.includes('@')
 	);
 }
 
 module.exports = {
 	postIsValid: postIsValid,
-	userIsValid: userIsValid,
+	userCredentialsAreValid: userCredentialsAreValid,
 }

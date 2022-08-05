@@ -7,10 +7,6 @@ function getHome(req, res) {
 }
 
 async function getAdmin(req, res) {
-	if (!res.locals.isAuth) {
-		return res.status(401).render("401");
-	}
-
 	const sessionErrorData = validationSession.getSessionErrorData(
 		req,
 		{
@@ -24,9 +20,6 @@ async function getAdmin(req, res) {
 }
 
 async function createPost(req, res) {
-	if (!res.locals.isAuth) {
-		return res.status(401).render("401");
-	}
 	const { title, content } = req.body;
 	if (!validation.postIsValid(title, content)) {
 		validationSession.flashErrorsToSession(
@@ -49,16 +42,18 @@ async function createPost(req, res) {
 	res.redirect("/admin");
 }
 
-async function getSinglePost(req, res) {
-	if (!res.locals.isAuth) {
-		return res.status(401).render("401");
-	}
+async function getSinglePost(req, res, next) {
+	let post;
 	const { id } = req.params;
-	const post = new Post(null, null, id);
+	try {
+		post = new Post(null, null, id);
+	} catch(error) {
+		return res.status(404).render("404");
+	}
 	await post.fetch();
 
 	if (!post.title || !post.content) {
-		return res.status(400).render("400");
+		return res.status(404).render("404");
 	}
 
 	const sessionErrorData = validationSession.getSessionErrorData(req, {
