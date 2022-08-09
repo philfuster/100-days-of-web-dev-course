@@ -9,35 +9,35 @@
     <% if(inputData.hasError) { %>
       <p id="input-error"><%= inputData.message %></p>
     <% } %>
-    <form action="/signup" method="POST">
+    <form id="auth-form" method="post" action="/signup" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
       <div class="form-control">
         <label for="email">E-mail</label>
-        <input type="email" name="email" id="email" required />
+        <input type="email" name="email" id="email" value="<%= inputData.email %>" required />
       </div>
       <div class="form-control">
         <label for="confirmEmail">Confirm E-mail</label>
-        <input type="email" name="confirmEmail" id="confirmEmail" required />
+      <input type="email" name="confirmEmail" id="confirmEmail" value="<%= inputData.confirmEmail %>" required />
       </div>
       <div class="form-control border-bottom">
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" required />
+      <input type="password" name="password" id="password" value="<%= inputData.password %>" required />
       </div>
       <div class="form-control">
         <label for="name">Full Name</label>
-        <input type="text" name="name" id="name" required />
+        <input type="text" name="name" id="name" value="<%= inputData.name %>" required />
       </div>
       <div class="form-control">
         <label for="address">Street</label>
-        <input type="text" name="address" id="address" required />
+        <input type="text" name="address" id="address" value="<%= inputData.address %>" required />
       </div>
       <div class="form-control">
         <label for="postalCode">Postal Code</label>
-        <input type="text" name="postalCode" id="postalCode" required />
+        <input type="text" name="postalCode" id="postalCode" value="<%= inputData.postalCode %>"required />
       </div>
       <div class="form-control">
         <label for="city">City</label>
-        <input type="text" name="city" id="city" required />
+        <input type="text" name="city" id="city" value="<%= inputData.city %>"required />
       </div>
       <button class="btn">Create Account</button>
       <div id="auth-alternative">

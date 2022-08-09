@@ -7,7 +7,7 @@ const authMiddleware = require("./middlewares/auth-middleware");
 const addCSRFTokenMiddleware = require("./middlewares/csrf-token-middleware.js");
 const db = require("./data/database");
 const defaultRoutes = require("./routes/default");
-const authRoutes = require('./routes/auth');
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -28,9 +28,9 @@ app.use(authRoutes);
 
 app.use(function (error, req, res, next) {
 	console.log(error);
-  res.status(500).render("500");
+	res.status(500).render("500");
 });
 
 db.connectToDatabase().then(function () {
-  app.listen(3000);
+	app.listen(3000);
 });

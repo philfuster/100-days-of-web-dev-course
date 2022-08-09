@@ -2,8 +2,8 @@ function userCredentialsAreValid(
 	email,
 	confirmEmail,
 	password,
-	fullName,
-	street,
+	name,
+	address,
 	postalCode,
 	city
 ) {
@@ -11,8 +11,8 @@ function userCredentialsAreValid(
 		email &&
 		confirmEmail &&
 		password &&
-		fullName &&
-		street &&
+		name &&
+		address &&
 		postalCode &&
 		city &&
 		email.trim() !== "" &&
@@ -23,3 +23,7 @@ function userCredentialsAreValid(
 		email.includes("@")
 	);
 }
+
+module.exports = {
+	userCredentialsAreValid,
+};

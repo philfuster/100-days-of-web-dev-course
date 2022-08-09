@@ -5,23 +5,23 @@ function createSessionStore() {
 	const MongoDBStore = mongodbStore(session);
 
 	const sessionStore = new MongoDBStore({
-		uri: 'mongodb://localhost:27017',
-		databaseName: 'shop',
-		collection: 'sessions'
+		uri: "mongodb://localhost:27017",
+		databaseName: "shop",
+		collection: "sessions",
 	});
 
 	const sessionConfig = {
-		secret: 'keyboard cat',
+		secret: "keyboard cat",
 		resave: false,
 		saveUninitialized: false,
 		store: sessionStore,
 		cookie: {
 			maxAge: 2 * 24 * 60 * 60 * 1000,
 		},
-	}
+	};
 	return session(sessionConfig);
 }
 
 module.exports = {
 	createSessionStore,
-}
+};

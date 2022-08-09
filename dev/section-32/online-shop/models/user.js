@@ -1,15 +1,14 @@
 const mongodb = require("mongodb");
 const db = require("../data/database");
 const bcrypt = require("bcryptjs");
-const { flashErrorsToSession } = require("../util/validation-session");
 
 const { ObjectId } = mongodb;
 
 class User {
 	constructor(
 		email,
-		confirmEmail,
 		password,
+		confirmEmail,
 		fullName,
 		street,
 		postalCode,
@@ -25,7 +24,10 @@ class User {
 	}
 
 	async getUserWithSameEmail() {
-		const existingUser = await db.getDb().findOne({ email: this.email });
+		const existingUser = await db
+			.getDb()
+			.collection("users")
+			.findOne({ email: this.email });
 		return existingUser;
 	}
 
@@ -42,7 +44,7 @@ class User {
 		const hashedPassword = await bcrypt.hash(this.password, 12);
 		this.password = hashedPassword;
 
-		const result = await db.getDb().insertOne({
+		const result = await db.getDb().collection("users").insertOne({
 			email: this.email,
 			password: this.password,
 			fullName: this.fullName,
@@ -53,4 +55,14 @@ class User {
 
 		return result;
 	}
+
+	async login(comparePassword) {
+		const passwordsAreEqual = await bcrypt.compare(
+			this.password,
+			comparePassword
+		);
+		return passwordsAreEqual;
+	}
 }
+
+module.exports = User;

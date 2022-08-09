@@ -4,4 +4,4 @@ function getHome(req, res) {
 
 module.exports = {
 	getHome,
-}
+};

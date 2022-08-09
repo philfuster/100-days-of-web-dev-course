@@ -5,7 +5,7 @@ async function auth(req, res, next) {
 		return next();
 	}
 	res.locals.isAuth = isAuth;
-	request.locals.user = user;
+	res.locals.user = user;
 	next();
 }
 

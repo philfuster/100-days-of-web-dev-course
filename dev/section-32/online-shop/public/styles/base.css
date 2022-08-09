@@ -8,7 +8,7 @@ html {
 	--color-secondary-600: rgb(173, 92, 0);
 
 	background-color: var(--color-grey-600);
-	font-family: 'Montserrat', sans-serif;
+	font-family: "Montserrat", sans-serif;
 }
 
 body {
