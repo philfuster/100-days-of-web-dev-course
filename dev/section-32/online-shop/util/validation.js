@@ -17,8 +17,10 @@ function userCredentialsAreValid(
 		city &&
 		email.trim() !== "" &&
 		confirmEmail.trim() !== "" &&
+		postalCode.trim() !== "" &&
+		postalCode.trim().length === 5 &&
 		password.trim() !== "" &&
-		password.trim().length > 6 &&
+		password.trim().length >= 6 &&
 		email === confirmEmail &&
 		email.includes("@")
 	);

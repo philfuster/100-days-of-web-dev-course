@@ -6,9 +6,7 @@
   <%-include('includes/header.ejs') %>
   <main>
     <h1>Login</h1>
-    <% if(inputData.hasError) { %>
-      <p id="input-error"><%= inputData.message %></p>
-    <% } %>
+    <%-include("includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form id="auth-form" action="/login" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
       <div class="form-control">
@@ -21,7 +19,7 @@
       </div>
       <button class="btn">Login</button>
       <div id="auth-alternative">
-        <a href="/signup" class="btn btn-alt">Create an Account Instead</a>
+        <a href="/signup" class="btn btn-alt">Create an Account</a>
       </div>
     </form>
   </main>

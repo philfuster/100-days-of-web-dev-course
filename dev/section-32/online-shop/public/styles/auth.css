@@ -1,15 +1,13 @@
-main {
+#auth-form {
 	max-width: 24rem;
+	margin: 0 auto;
+	background-color: rgb(24, 24, 24);
+	padding: 1.5rem;
+	border-radius: 3px;
 }
 
 #auth-alternative {
 	margin-top: 0.5rem;
-}
-
-#auth-form {
-	background-color: rgb(24, 24, 24);
-	padding: 1.5rem;
-	border-radius: 3px;
 }
 
 h1 {

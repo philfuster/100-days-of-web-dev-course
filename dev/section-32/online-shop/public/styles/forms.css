@@ -29,8 +29,31 @@ textarea:focus {
 }
 
 #input-error {
-	margin: 1rem 0;
-	padding: 0.5rem;
-	color: var(--color-primary-500);
+	background-color: rgb(240, 183, 183);
+	color: rgb(189, 6, 6);
 	border-radius: 4px;
+	text-align: left;
+	padding: 1rem .75rem;
+	margin-bottom: 1rem;
+}
+
+#input-error h2,
+#input-error p {
+  font-size: .8rem;
+}
+
+#input-error h2 {
+	text-transform: uppercase;
+	font-weight: bold;
+	margin: 0;
+	margin-bottom: 0.25rem;
+}
+
+#input-error p {
+	margin: 0;
+}
+
+.separator {
+	border-bottom: 1px solid rgb(221, 221, 221);
+	margin: 1rem 0;
 }

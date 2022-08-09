@@ -6,9 +6,7 @@
   <%-include('includes/header.ejs') %>
   <main>
     <h1>Create New Account</h1>
-    <% if(inputData.hasError) { %>
-      <p id="input-error"><%= inputData.message %></p>
-    <% } %>
+    <%-include("includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form id="auth-form" method="post" action="/signup" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
       <div class="form-control">
@@ -19,10 +17,11 @@
         <label for="confirmEmail">Confirm E-mail</label>
       <input type="email" name="confirmEmail" id="confirmEmail" value="<%= inputData.confirmEmail %>" required />
       </div>
-      <div class="form-control border-bottom">
+      <div class="form-control">
         <label for="password">Password</label>
       <input type="password" name="password" id="password" value="<%= inputData.password %>" required />
       </div>
+      <div class="separator"></div>
       <div class="form-control">
         <label for="name">Full Name</label>
         <input type="text" name="name" id="name" value="<%= inputData.name %>" required />
