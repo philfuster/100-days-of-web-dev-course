@@ -1,0 +1,17 @@
+main {
+	max-width: 24rem;
+}
+
+#auth-alternative {
+	margin-top: 0.5rem;
+}
+
+form {
+	background-color: rgb(24, 24, 24);
+	padding: 1.5rem;
+	border-radius: 3px;
+}
+
+h1 {
+	color:rgb(87, 87, 87);
+}

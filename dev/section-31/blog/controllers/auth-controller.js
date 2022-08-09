@@ -87,9 +87,8 @@ async function loginUser(req, res) {
 		)
 		return;
 	}
-
-	const passwordsAreEqual = user.comparePassword(enteredPassword);
-	if (!passwordsAreEqual) {
+	const success = await user.login(existingUser.password);
+	if (!success) {
 		validationSession.flashErrorsToSession(
 			req,
 			{

@@ -1,0 +1,116 @@
+html {
+	--color-grey-600: rgb(33, 33, 33);
+
+	--color-primary-500: rgb(163, 120, 28);
+	--color-primary-700: rgb(139, 107, 36);
+
+	--color-secondary-400: rgb(202, 127, 41);
+	--color-secondary-600: rgb(173, 92, 0);
+
+	background-color: var(--color-grey-600);
+	font-family: 'Montserrat', sans-serif;
+}
+
+body {
+	margin: 0 auto;
+	max-width: 50rem;
+}
+
+main {
+	margin: 2rem auto;
+	width: 90%;
+	text-align: center;
+	color: white;
+}
+
+ul,
+li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	color: white;
+}
+
+a:hover,
+a:active {
+	background-color: rgba(150, 132, 132, 0.5);
+}
+
+#main-header {
+	height: 4rem;
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid var(--color-secondary-400);
+}
+
+#main-header nav {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+#main-header ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#main-header li {
+	margin: 0 1rem;
+}
+
+#logo {
+	font-weight: bold;
+	font-size: 1.75rem;
+}
+
+#main-header a,
+#main-header button {
+	text-decoration: none;
+	color: var(--color-primary-500);
+	padding: 0.25rem 0.75rem;
+	border-radius: 3px;
+}
+
+#main-header button {
+	font: inherit;
+	border-color: transparent;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+#main-header a:hover,
+#main-header a:active,
+#main-header button:hover,
+#main-header button:active {
+	background-color: rgba(150, 132, 132, 0.5);
+}
+
+.btn {
+	font: inherit;
+	text-decoration: none;
+	cursor: pointer;
+	background-color: var(--color-secondary-400);
+	border: 1px solid var(--color-secondary-400);
+	border-radius: 4px;
+	color: white;
+	padding: 0.5rem 1.5rem;
+}
+
+.btn:hover,
+.btn:active {
+	background-color: var(--color-secondary-600);
+	border-color: var(--color-secondary-600);
+}
+
+.btn.btn-alt {
+	background-color: transparent;
+	border: none;
+	color: rgb(255, 205, 147);
+}

@@ -40,12 +40,6 @@ class User {
 		return result;
 	}
 
-	async comparePassword(enteredPassword) {
-		if (this.password == null) return false;
-		const result = await bcrypt.compare(enteredPassword, this.password);
-		return result;
-	}
-
 	async delete() {
 		if (!this.id) {
 			return;
@@ -54,6 +48,12 @@ class User {
 			_id: this.id,
 		})
 		return result;
+	}
+
+	async login(comparePassword) {
+		const passwordsAreEqual = await bcrypt.compare(this.password, comparePassword);
+
+		return passwordsAreEqual;
 	}
 }
 
