@@ -6,6 +6,7 @@ const sessionConfig = require("./config/session");
 const authMiddleware = require("./middlewares/auth-middleware");
 const addCSRFTokenMiddleware = require("./middlewares/csrf-token-middleware.js");
 const db = require("./data/database");
+const errorHandlerMiddleware = require('./middlewares/error-handler');
 const defaultRoutes = require("./routes/default");
 const authRoutes = require("./routes/auth");
 const shopRoutes = require("./routes/shop");
@@ -29,10 +30,7 @@ app.use(defaultRoutes);
 app.use(authRoutes);
 app.use(shopRoutes);
 
-app.use(function (error, req, res, next) {
-	console.log(error);
-	res.status(500).render("500");
-});
+app.use(errorHandlerMiddleware);
 
 db.connectToDatabase().then(function () {
 	app.listen(3000);
