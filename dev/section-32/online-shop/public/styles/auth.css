@@ -1,7 +1,7 @@
 #auth-form {
 	max-width: 24rem;
 	margin: 0 auto;
-	background-color: rgb(24, 24, 24);
+	background-color: var(--color-grey-700);
 	padding: 1.5rem;
 	border-radius: 3px;
 }

@@ -1,0 +1,33 @@
+#product-list ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 200px);
+	gap: 10px;
+}
+
+.product-list-item {
+	background-color: var(--color-grey-700);
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.product-list-item h3 {
+	margin: 0.5rem 0;
+}
+
+.product-list-item img {
+	width: 200px;
+	height: 200px;
+	box-sizing: border-box;
+}
+
+.product-list-item-detail {
+	padding: 1rem;
+}
+
+.product-list-item-detail button {
+	background-color: var(--color-grey-700);
+	color: var(--color-primary-500);
+}
+.product-list-item button:hover {
+	background-color: var(--color-grey-400);
+}
