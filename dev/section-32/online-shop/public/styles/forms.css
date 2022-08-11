@@ -16,7 +16,7 @@ textarea {
 	font-size: 1.5rem;
 	padding: 0.25rem 0.5rem;
 	border-radius: 4px;
-	/* border: 1px solid rgb(204, 204, 204); */
+	border: 1px solid rgb(204, 204, 204);
 	width: 100%;
 	box-sizing: border-box;
 	color: rgb(78, 78, 73);
@@ -33,13 +33,13 @@ textarea:focus {
 	color: rgb(189, 6, 6);
 	border-radius: 4px;
 	text-align: left;
-	padding: 1rem .75rem;
+	padding: 1rem 0.75rem;
 	margin-bottom: 1rem;
 }
 
 #input-error h2,
 #input-error p {
-  font-size: .8rem;
+	font-size: 0.8rem;
 }
 
 #input-error h2 {
@@ -54,6 +54,6 @@ textarea:focus {
 }
 
 .separator {
-	border-bottom: 1px solid rgb(221, 221, 221);
+	border-bottom: 1px solid var(--color-primary-400);
 	margin: 1rem 0;
 }

@@ -1,5 +1,5 @@
 #auth-form {
-	max-width: 24rem;
+	max-width: 20rem;
 	margin: 0 auto;
 	background-color: var(--color-grey-700);
 	padding: 1.5rem;
@@ -7,7 +7,7 @@
 }
 
 #auth-alternative {
-	margin-top: 0.5rem;
+	margin-top: 1rem;
 }
 
 h1 {

@@ -46,7 +46,8 @@ async function signup(req, res) {
 		validationSession.flashErrorsToSession(
 			req,
 			{
-				message: "Please check your input. Password must be at least 6 characters long, postal code must be 5 characters long.",
+				message:
+					"Please check your input. Password must be at least 6 characters long, postal code must be 5 characters long.",
 				email,
 				confirmEmail,
 				password,

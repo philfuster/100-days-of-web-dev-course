@@ -1,17 +1,20 @@
 <%- include('includes/head.ejs', { title: 'Welcome' }) %>
-<link rel="stylesheet" href="/styles/product-list.css">
+<link rel="stylesheet" href="/styles/product-detail.css">
 </head>
 <body>
   <%-include('includes/header.ejs') %>
   <main>
-    <div id="product">
-      <h1><%= product.name %></h1>
+    <div id="product-item">
       <img src="/images/<%= product.imagePath %>.jpg" alt="<%= product.alt %>" />
-      <form action="/products/<%= product.id %>" method="GET">
-        <button class="btn">Add to Cart</button>
-      </form>
+      <div id="product-info">
+        <h1><%= product.name %></h1>
+        <p class="product-price"><%= product.formattedPrice%></p>
+        <form action="/products/<%= product.id %>" method="GET">
+          <button class="btn btn-primary">Add to Cart</button>
+        </form>
+      </div>
     </div>
-    <div id="product-info">
+    <div id="product-detail">
       <p><%= product.summary %></p>
       <p><%= product.description %></p>
     </div>

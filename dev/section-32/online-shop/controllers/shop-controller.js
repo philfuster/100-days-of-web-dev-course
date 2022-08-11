@@ -1,8 +1,9 @@
-const Product = require('../models/product');
+const Product = require("../models/product");
+const router = require("../routes/shop");
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
-	res.render("products", { products});
+	res.render("products", { products });
 }
 
 async function getSingleProduct(req, res) {
@@ -11,14 +12,25 @@ async function getSingleProduct(req, res) {
 
 	await product.fetch();
 
-	if(!product.name) {
-		return res.status(404).render('404');
+	if (!product.name) {
+		return res.status(404).render("404");
 	}
 
-	res.render("single-product", { product })
+	product.formattedPrice = new Intl.NumberFormat("en-US", {
+		currency: "USD",
+		style: "currency",
+	}).format(product.price);
+
+	res.render("single-product", { product });
+}
+
+async function getCart(req, res) {
+	const cart = [];
+	res.render("cart", { cart });
 }
 
 module.exports = {
 	getProducts,
-	getSingleProduct
-}
+	getSingleProduct,
+	getCart,
+};

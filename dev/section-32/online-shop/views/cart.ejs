@@ -1,0 +1,26 @@
+<%- include('includes/head.ejs', { title: 'Your Cart' }) %>
+</head>
+<body>
+  <%-include('includes/header.ejs') %>
+  <main>
+    <h1>Your Cart</h1>
+    <section id="cart">
+      <% for (const [item, index] of cart.entries()) { %>
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <p><%= item.name %></p>
+            <p><%= item.formattedTotal %> <span class="unit-price"><%= item.formattedPrice%></span></p>
+          </div>
+          <div class="cart-item-actions">
+            <input type="number" name="item-quantity-<%= index%>" id="item-quantity-<%= index%>">
+            <button class="btn">Update</button>
+          </div>
+        </div>
+      <% } %>
+    </section>
+    <section id="totals">
+
+    </section>
+  </main>
+</body>
+</html>
