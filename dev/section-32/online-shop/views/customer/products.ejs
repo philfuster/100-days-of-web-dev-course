@@ -1,15 +1,15 @@
-<%- include('includes/head.ejs', { title: 'Welcome' }) %>
+<%- include('../includes/head.ejs', { title: 'Welcome' }) %>
 <link rel="stylesheet" href="/styles/product-list.css">
 </head>
 <body>
-  <%-include('includes/header.ejs') %>
+  <%-include('../includes/header.ejs') %>
   <main>
     <h1>All Products</h1>
     <section id="product-list">
       <ul>
         <% for (const product of products) { %>
           <li>
-            <%-include('includes/product-list-item.ejs', {product: product}) %>
+            <%-include('../includes/product-list-item.ejs', {product: product}) %>
           </li>
         <% } %>
       </ul>

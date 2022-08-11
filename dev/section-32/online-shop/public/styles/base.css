@@ -118,3 +118,10 @@ a:active {
 	border: none;
 	color: rgb(255, 205, 147);
 }
+
+#cart-quantity {
+	color: white;
+	padding: 0 0.75rem;
+	border-radius: 16px;
+	background-color: var(--color-secondary-400);
+}

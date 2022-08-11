@@ -17,7 +17,7 @@ function getSignup(req, res) {
 		city: "",
 	});
 
-	res.render("signup", { inputData: sessionErrorData });
+	res.render("auth/signup", { inputData: sessionErrorData });
 }
 
 function getLogin(req, res) {
@@ -26,7 +26,7 @@ function getLogin(req, res) {
 		password: "",
 	});
 
-	res.render("login", { inputData: sessionErrorData });
+	res.render("auth/login", { inputData: sessionErrorData });
 }
 
 async function signup(req, res) {

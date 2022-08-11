@@ -1,9 +1,8 @@
 const Product = require("../models/product");
-const router = require("../routes/shop");
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
-	res.render("products", { products });
+	res.render("customer/products", { products });
 }
 
 async function getSingleProduct(req, res) {
@@ -21,12 +20,13 @@ async function getSingleProduct(req, res) {
 		style: "currency",
 	}).format(product.price);
 
-	res.render("single-product", { product });
+	res.render("customer/single-product", { product });
 }
 
 async function getCart(req, res) {
 	const cart = [];
-	res.render("cart", { cart });
+	// look at session data and throw that over to the client lol
+	res.render("customer/cart", { cart });
 }
 
 module.exports = {

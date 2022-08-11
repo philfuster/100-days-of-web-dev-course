@@ -94,6 +94,16 @@ view orders placed
 - total price
 - number of items
 
+#### Storage of Cart data
+
+Should not be on file in a database.
+
+The cart should exist only as part of session data.
+
+A user can convert the cart to an Order by signing in and purchasing the items in the cart.
+
+When a user signs in and purchases the cart - that is when the cart data gets written to the order collection.
+
 ### Order
 
 - User data

@@ -9,7 +9,7 @@ const db = require("./data/database");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const defaultRoutes = require("./routes/default");
 const authRoutes = require("./routes/auth");
-const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/customer");
 
 const app = express();
 
