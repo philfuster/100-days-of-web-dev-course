@@ -7,12 +7,10 @@ function getCartSessionData(req, defaultValues) {
 		};
 	}
 
-	req.session.cartData = null;
-
 	return sessionCartData;
 }
 
-function setSessionCartData(req, sessionCartData, action) {
+function setCartSessionData(req, sessionCartData, action) {
 	req.session.cartData = {
 		...sessionCartData,
 	};
@@ -22,5 +20,5 @@ function setSessionCartData(req, sessionCartData, action) {
 
 module.exports = {
 	getCartSessionData,
-	setSessionCartData,
+	setCartSessionData,
 };

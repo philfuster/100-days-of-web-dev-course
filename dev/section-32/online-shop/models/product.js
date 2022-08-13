@@ -26,13 +26,12 @@ class Product {
 			.getDb()
 			.collection("products")
 			.findOne({ _id: this.id });
-		if (product) {
-			this.name = product.name;
-			this.summary = product.summary;
-			this.description = product.description;
-			this.price = product.price;
-			this.imagePath = product.imagePath;
-		}
+		if (product == null) return null;
+		this.name = product.name;
+		this.summary = product.summary;
+		this.description = product.description;
+		this.price = product.price;
+		this.imagePath = product.imagePath;
 	}
 }
 

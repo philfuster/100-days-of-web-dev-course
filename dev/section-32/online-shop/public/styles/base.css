@@ -1,7 +1,7 @@
 html {
+	--color-grey-400: rgb(73, 73, 73);
 	--color-grey-500: rgb(33, 33, 33);
 	--color-grey-700: rgb(24, 24, 24);
-	--color-grey-400: rgb(73, 73, 73);
 
 	--color-primary-400: rgb(163, 141, 94);
 	--color-primary-500: rgb(163, 120, 28);
@@ -34,7 +34,8 @@ li {
 }
 
 a {
-	color: white;
+	text-decoration: none;
+	color: var(--color-secondary-400);
 }
 
 a:hover,
@@ -105,6 +106,7 @@ a:active {
 .btn-secondary {
 	background-color: transparent;
 	border: 1px solid var(--color-primary-500);
+	color: var(--color-secondary-400);
 }
 
 .btn-primary:hover,
