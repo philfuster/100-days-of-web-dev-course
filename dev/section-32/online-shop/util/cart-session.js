@@ -18,7 +18,14 @@ function setCartSessionData(req, sessionCartData, action) {
 	return;
 }
 
+const defaultCartData = {
+	items: [],
+	totalPrice: 0,
+	quantity: 0,
+};
+
 module.exports = {
 	getCartSessionData,
 	setCartSessionData,
+	defaultCartData,
 };

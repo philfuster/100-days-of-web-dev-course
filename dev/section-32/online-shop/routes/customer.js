@@ -19,6 +19,6 @@ router.post("/cart/update", makeSafe(customerController.updateItemQuantity));
 
 router.use(guardRoute);
 
-router.post("/cart/checkout", makeSafe(customerController.checkout));
+router.post("/cart/checkout", makeSafe(customerController.checkOut));
 
 module.exports = router;

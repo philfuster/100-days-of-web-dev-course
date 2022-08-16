@@ -1,12 +1,13 @@
 const Product = require("../models/product");
+const User = require("../models/user");
+const Order = require("../models/order");
+const orderValidation = require("../util/order-validation");
 const cartSession = require("../util/cart-session");
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
 	const sessionCartData = cartSession.getCartSessionData(req, {
-		items: [],
-		totalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
 	res.render("customer/products", { products, cartData: sessionCartData });
 }
@@ -22,9 +23,7 @@ async function getSingleProduct(req, res) {
 	}
 
 	const sessionCartData = cartSession.getCartSessionData(req, {
-		items: [],
-		totalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
 
 	product.formattedPrice = new Intl.NumberFormat("en-US", {
@@ -41,25 +40,35 @@ async function getSingleProduct(req, res) {
 
 async function getCart(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
-		items: [],
-		totalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
 
 	const currencyFormatter = new Intl.NumberFormat("en-US", {
 		currency: "USD",
 		style: "currency",
 	});
+
 	let totalPrice = 0;
-	sessionCartData.items.forEach((item) => {
-		item.formattedPrice = currencyFormatter.format(item.price);
+	const items = sessionCartData.items.map((item) => {
 		const lineTotal = item.price * item.quantity;
+		const displayItem = {
+			id: item.id,
+			name: item.name,
+			quantity: item.quantity,
+			formattedPrice: currencyFormatter.format(item.price),
+			formattedTotalPrice: currencyFormatter.format(lineTotal),
+		};
 		totalPrice += lineTotal;
-		item.formattedTotalPrice = currencyFormatter.format(lineTotal);
+		return displayItem;
 	});
-	sessionCartData.cartTotalPrice = currencyFormatter.format(totalPrice);
+	sessionCartData.cartTotalPrice = totalPrice;
+	const cartData = {
+		items,
+		cartTotalPrice: currencyFormatter.format(totalPrice),
+		quantity: sessionCartData.quantity,
+	};
 	res.render("customer/cart", {
-		cartData: sessionCartData,
+		cartData,
 		csrfToken: req.csrfToken(),
 	});
 }
@@ -67,9 +76,7 @@ async function getCart(req, res) {
 async function addProductToCart(req, res) {
 	const { productId } = req.body;
 	const cartData = cartSession.getCartSessionData(req, {
-		items: [],
-		cartTotalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
 
 	let itemUpdated = false;
@@ -101,16 +108,12 @@ async function addProductToCart(req, res) {
 		});
 		cartData.cartTotalPrice += existingProduct.price;
 	}
-	cartData.quantity = calculateCartTotalQuantity(cartData.items);
+	cartData.quantity = items.reduce((accumulator, item) => {
+		return (accumulator += item.quantity);
+	}, 0);
 	cartSession.setCartSessionData(req, cartData, function () {
 		res.json({ hasError: false, cartTotalQuantity: cartData.quantity });
 	});
-}
-
-function calculateCartTotalQuantity(items) {
-	return items.reduce((accumulator, item) => {
-		return (accumulator += item.quantity);
-	}, 0);
 }
 
 async function updateItemQuantity(req, res) {
@@ -120,9 +123,7 @@ async function updateItemQuantity(req, res) {
 		style: "currency",
 	});
 	const cartData = cartSession.getCartSessionData(req, {
-		items: [],
-		cartTotalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
 	let itemUpdated = false;
 	let lineTotalPrice = 0;
@@ -133,30 +134,75 @@ async function updateItemQuantity(req, res) {
 		itemUpdated = true;
 	});
 	if (!itemUpdated) {
-		return res.json({ hasError: true, message: 'invalid product.'});
+		return res.json({ hasError: true, message: "invalid product." });
 	}
-	const { totalPrice, totalQuantity } = cartData.items.reduce((accumulator, item) => {
-		accumulator.totalPrice += item.price * item.quantity;
-		accumulator.totalQuantity += item.quantity;
-		return accumulator;
-	}, {
-		totalPrice: 0,
-		totalQuantity: 0
-	});
+	const { totalPrice, totalQuantity } = cartData.items.reduce(
+		(accumulator, item) => {
+			accumulator.totalPrice += item.price * item.quantity;
+			accumulator.totalQuantity += item.quantity;
+			return accumulator;
+		},
+		{
+			totalPrice: 0,
+			totalQuantity: 0,
+		}
+	);
 	cartData.cartTotalPrice = totalPrice;
 	cartData.quantity = totalQuantity;
 	cartSession.setCartSessionData(req, cartData, function () {
-		res.json({ hasError: false, cartTotalPrice: currencyFormatter.format(cartData.cartTotalPrice), totalQuantity: parseInt(totalQuantity), lineTotalPrice: currencyFormatter.format(lineTotalPrice) });
+		res.json({
+			hasError: false,
+			cartTotalPrice: currencyFormatter.format(cartData.cartTotalPrice),
+			totalQuantity: parseInt(totalQuantity),
+			lineTotalPrice: currencyFormatter.format(lineTotalPrice),
+		});
 	});
 }
 
 async function checkOut(req, res) {
 	const cartData = cartSession.getCartSessionData(req, {
-		items: [],
-		cartTotalPrice: 0,
-		quantity: 0,
+		...cartSession.defaultCartData,
 	});
+	const user = new User(
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		req.session.user.id
+	);
+	await user.fetch();
+	if (user.fullName == null || user.email == null) {
+		return res.redirect("/500");
+	}
+	const order = new Order(
+		{
+			fullName: user.fullName,
+			street: user.street,
+			postalCode: user.postalCode,
+			city: user.city,
+		},
+		new Date(),
+		cartData.items,
+		"PENDING"
+	);
+	const orderIsValid = await orderValidation.orderIsValid(order);
+	if (!orderIsValid) {
+		return res.redirect("/500");
+	}
 
+	await order.save();
+
+	cartSession.setCartSessionData(
+		req,
+		{
+			...cartSession.defaultCartData,
+		},
+		function () {
+			return res.redirect("/cart");
+		}
+	);
 }
 
 module.exports = {
@@ -164,5 +210,6 @@ module.exports = {
 	getSingleProduct,
 	getCart,
 	addProductToCart,
-	updateItemQuantity
+	updateItemQuantity,
+	checkOut,
 };

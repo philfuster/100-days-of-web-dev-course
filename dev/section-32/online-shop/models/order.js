@@ -29,13 +29,13 @@ class Order {
 	}
 
 	async save() {
-		const result = await db.getDb.collection("orders").insertOne({
+		const result = await db.getDb().collection("orders").insertOne({
 			user: this.user,
 			date: this.date,
 			items: this.items,
 			status: this.status,
-		})
-		return result
+		});
+		return result;
 	}
 }
 

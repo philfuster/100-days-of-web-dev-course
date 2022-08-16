@@ -24,7 +24,10 @@
     <section id="totals">
       <p>Total: <span id="cart-total-price"><%= cartData.cartTotalPrice%></span></p>
       <% if (locals.isAuth) { %>
-        <button class="btn btn-primary">Buy Products</button>
+        <form action="/cart/checkout" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="btn btn-primary">Buy Products</button>
+        </form>
       <% } else { %>
         <a href="/login">Log in to proceed and purchase the items.</a>
       <% } %>

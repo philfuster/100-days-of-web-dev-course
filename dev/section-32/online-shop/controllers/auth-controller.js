@@ -4,11 +4,23 @@ const validationSession = require("../util/validation-session");
 const cartSession = require("../util/cart-session");
 
 function get401(req, res) {
-	res.status(401).render("401");
+	const sessionCartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	res.status(401).render("401", { cartData: sessionCartData });
 }
 
 function get404(req, res) {
-	res.status(404).render("404");
+	const sessionCartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	res.status(404).render("404", { cartData: sessionCartData });
+}
+function get500(req, res) {
+	const sessionCartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	res.status(500).render("500", { cartData: sessionCartData });
 }
 
 function getSignup(req, res) {
@@ -22,11 +34,12 @@ function getSignup(req, res) {
 		city: "",
 	});
 	const sessionCartData = cartSession.getCartSessionData(req, {
-		items: [],
-		totalPrice: 0,
-		quantity: 0
+		...cartSession.defaultCartData,
 	});
-	res.render("auth/signup", { inputData: sessionErrorData, cartData: sessionCartData });
+	res.render("auth/signup", {
+		inputData: sessionErrorData,
+		cartData: sessionCartData,
+	});
 }
 
 function getLogin(req, res) {
@@ -35,12 +48,13 @@ function getLogin(req, res) {
 		password: "",
 	});
 	const sessionCartData = cartSession.getCartSessionData(req, {
-		items: [],
-		totalPrice: 0,
-		quantity: 0
+		...cartSession.defaultCartData,
 	});
 
-	res.render("auth/login", { inputData: sessionErrorData, cartData: sessionCartData});
+	res.render("auth/login", {
+		inputData: sessionErrorData,
+		cartData: sessionCartData,
+	});
 }
 
 async function signup(req, res) {
@@ -77,7 +91,8 @@ async function signup(req, res) {
 		return;
 	}
 
-	const user = new User(email, password, null);
+	const user = new User(email, password, name, address, postalCode, city, null);
+
 	const existsAlready = await user.existsAlready();
 	if (existsAlready) {
 		validationSession.flashErrorsToSession(
@@ -142,6 +157,7 @@ async function login(req, res) {
 		id: existingUser._id,
 		email: existingUser.email,
 	};
+
 	req.session.isAuthenticated = true;
 	req.session.save(function () {
 		res.redirect("/");
@@ -158,6 +174,7 @@ module.exports = {
 	getSignup,
 	get401,
 	get404,
+	get500,
 	signup,
 	getLogin,
 	login,
