@@ -6,12 +6,8 @@ const csrfToken = document
 	.querySelector('meta[name="csrf-token"]')
 	.getAttribute("content");
 
-function updateCartTotalQuantity() {}
-
 async function addProductToCart(event) {
 	const productId = productNameElement.dataset.productid;
-	console.dir(productNameElement);
-	console.log(productId);
 	const productInfo = {
 		productId,
 	};
@@ -25,8 +21,9 @@ async function addProductToCart(event) {
 		},
 	});
 
-	if (response.ok) {
-		updateCartTotalQuantity();
+	if (!response.hasError) {
+		const cartQuantity = parseInt(cartQuantityElement.textContent);
+		cartQuantityElement.textContent = cartQuantity + 1;
 	}
 }
 

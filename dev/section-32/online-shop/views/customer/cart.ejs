@@ -1,5 +1,7 @@
 <%- include('../includes/head.ejs', { title: 'Your Cart' }) %>
+<meta name="csrf-token", content="<%= csrfToken%>">
 <link rel="stylesheet" href="/styles/customer/cart.css">
+<script src="/scripts/cart.js" defer></script>
 </head>
 <body>
   <%-include('../includes/header.ejs') %>
@@ -10,19 +12,19 @@
         <div class="cart-item">
           <div class="cart-item-info">
             <p id="product-name"><%= item.name %></p>
-            <p><%= item.formattedTotalPrice %> <em class="unit-price">(<%= item.formattedPrice%>)</em></p>
+            <p><span id="product-total-price-<%= item.id %>"><%= item.formattedTotalPrice %></span> <em class="unit-price">(<%= item.formattedPrice%>)</em></p>
           </div>
           <div class="cart-item-actions">
-            <input type="number" id="product-quantity" value="<%= item.quantity %>">
-            <button class="btn btn-secondary">Update</button>
+            <input type="number" id="product-quantity-<%= item.id%>" value="<%= item.quantity %>">
+            <button data-productid="<%= item.id %>" class="btn btn-secondary update-btn">Update</button>
           </div>
         </div>
       <% } %>
     </section>
     <section id="totals">
-      <p>Total: <%= cartData.cartTotalPrice%></p>
+      <p>Total: <span id="cart-total-price"><%= cartData.cartTotalPrice%></span></p>
       <% if (locals.isAuth) { %>
-        <button>Buy Products</button>
+        <button class="btn btn-primary">Buy Products</button>
       <% } else { %>
         <a href="/login">Log in to proceed and purchase the items.</a>
       <% } %>

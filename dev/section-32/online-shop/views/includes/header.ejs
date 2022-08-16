@@ -3,7 +3,7 @@
     <a href="/" id="logo">WDE</a>
     <ul>
       <li><a href="/products">Shop</a></li>
-      <li><a href="/cart">Cart <span id="cart-quantity">0</span></a></li>
+      <li><a href="/cart">Cart <span id="cart-quantity"><%= cartData.quantity %> </span></a></li>
       <% if (!locals.isAuth) { %>
         <li><a href="/signup">Signup</a></li>
         <li>

@@ -1,9 +1,14 @@
 const User = require("../models/user");
 const validation = require("../util/validation");
 const validationSession = require("../util/validation-session");
+const cartSession = require("../util/cart-session");
 
 function get401(req, res) {
 	res.status(401).render("401");
+}
+
+function get404(req, res) {
+	res.status(404).render("404");
 }
 
 function getSignup(req, res) {
@@ -16,8 +21,12 @@ function getSignup(req, res) {
 		postalCode: "",
 		city: "",
 	});
-
-	res.render("auth/signup", { inputData: sessionErrorData });
+	const sessionCartData = cartSession.getCartSessionData(req, {
+		items: [],
+		totalPrice: 0,
+		quantity: 0
+	});
+	res.render("auth/signup", { inputData: sessionErrorData, cartData: sessionCartData });
 }
 
 function getLogin(req, res) {
@@ -25,8 +34,13 @@ function getLogin(req, res) {
 		email: "",
 		password: "",
 	});
+	const sessionCartData = cartSession.getCartSessionData(req, {
+		items: [],
+		totalPrice: 0,
+		quantity: 0
+	});
 
-	res.render("auth/login", { inputData: sessionErrorData });
+	res.render("auth/login", { inputData: sessionErrorData, cartData: sessionCartData});
 }
 
 async function signup(req, res) {
@@ -86,7 +100,6 @@ async function signup(req, res) {
 	}
 
 	await user.save();
-
 	res.redirect("/login");
 }
 
@@ -119,11 +132,12 @@ async function login(req, res) {
 				password: enteredPassword,
 			},
 			function () {
-				req.redirect("/login");
+				res.redirect("/login");
 			}
 		);
 		return;
 	}
+
 	req.session.user = {
 		id: existingUser._id,
 		email: existingUser.email,
@@ -143,6 +157,7 @@ function logout(req, res) {
 module.exports = {
 	getSignup,
 	get401,
+	get404,
 	signup,
 	getLogin,
 	login,

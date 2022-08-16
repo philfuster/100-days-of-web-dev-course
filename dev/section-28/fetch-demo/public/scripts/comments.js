@@ -23,11 +23,11 @@ function createCommentList(comments) {
 async function fetchCommentsForPost(event) {
   const postId = loadCommentsBtnElement.dataset.postid;
   try {
+    const response = await fetch(`/posts/${postId}/comments`);
     if (!response.ok) {
       alert('Fetching comments failed!');
       return;
     }
-    const response = await fetch(`/posts/${postId}/comments`);
     const responseData = await response.json();
     if (responseData != null && responseData.length > 0) {
       commentsElement.innerHTML = '';
@@ -59,8 +59,11 @@ async function saveComment(event) {
         'Content-Type': 'application/json',
       }
     });
+    console.log(response);
     if (response.ok) {
       fetchCommentsForPost();
+      commentTitleElement.value = '';
+      commentTextElement.value = '';
     } else {
       alert('could not send comment!');
     }
