@@ -5,11 +5,13 @@ const bcrypt = require("bcryptjs");
 const { ObjectId } = mongodb;
 
 class Order {
-	constructor(user, date, items, status, id) {
+	constructor(user, date, items, totalPrice, totalQuantity, status, id) {
 		this.user = user;
 		this.date = date;
 		this.items = items;
 		this.status = status;
+		this.totalPrice = totalPrice;
+		this.totalQuantity = totalQuantity;
 		if (id) {
 			this.id = new ObjectId(id);
 		}
@@ -25,6 +27,8 @@ class Order {
 		this.summary = order.summary;
 		this.date = order.date;
 		this.items = order.items;
+		this.totalPrice = order.totalPrice;
+		this.totalQuantity = order.totalQuantity;
 		this.status = order.status;
 	}
 
@@ -33,6 +37,8 @@ class Order {
 			user: this.user,
 			date: this.date,
 			items: this.items,
+			totalPrice: this.totalPrice,
+			totalQuantity: this.totalQuantity,
 			status: this.status,
 		});
 		return result;

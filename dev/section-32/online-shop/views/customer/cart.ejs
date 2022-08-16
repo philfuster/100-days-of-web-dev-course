@@ -22,7 +22,7 @@
       <% } %>
     </section>
     <section id="totals">
-      <p>Total: <span id="cart-total-price"><%= cartData.cartTotalPrice%></span></p>
+      <p>Total: <span id="cart-total-price"><%= cartData.totalPrice%></span></p>
       <% if (locals.isAuth) { %>
         <form action="/cart/checkout" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
