@@ -6,32 +6,40 @@
 <body>
   <%-include('../includes/header.ejs') %>
   <main>
-    <h1>Your Cart</h1>
-    <section id="cart">
-      <% for (const item of cartData.items) { %>
-        <div class="cart-item">
-          <div class="cart-item-info">
-            <p id="product-name"><%= item.name %></p>
-            <p><span id="product-total-price-<%= item.id %>"><%= item.formattedTotalPrice %></span> <em class="unit-price">(<%= item.formattedPrice%>)</em></p>
+    <% if (cartData.items.length < 1) { %>
+      <h1>Your Cart is empty.</h1>
+      <p><a href="/products">Continue shopping.</a></p>
+    <% } else { %>
+      <section id="cart">
+        <h1>Your Cart</h1>
+        <% for (const item of cartData.items) { %>
+          <div class="cart-item" id="cart-item-<%= item.id%>">
+            <div class="cart-item-info">
+              <p id="product-name"><%= item.name %></p>
+              <p><span id="product-total-price-<%= item.id %>"><%= item.formattedTotalPrice %></span> <em class="unit-price">(<%= item.formattedPrice%>)</em></p>
+            </div>
+            <div class="cart-item-actions">
+              <input type="number" id="product-quantity-<%= item.id%>" data-productid="<%= item.id %>" value="<%= item.quantity %>" min="1" max="99">
+              <div>
+                <input class="update-btn" id="update-btn-<%= item.id %>" type="submit" data-productid="<%= item.id %>" value="Update" disabled>
+                <input class="delete-btn" type="submit" data-productid="<%= item.id %>" value="Delete">
+              </div>
+            </div>
           </div>
-          <div class="cart-item-actions">
-            <input type="number" id="product-quantity-<%= item.id%>" value="<%= item.quantity %>">
-            <button data-productid="<%= item.id %>" class="btn btn-secondary update-btn">Update</button>
-          </div>
-        </div>
-      <% } %>
-    </section>
-    <section id="totals">
-      <p>Total: <span id="cart-total-price"><%= cartData.totalPrice%></span></p>
-      <% if (locals.isAuth) { %>
-        <form action="/cart/checkout" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button class="btn btn-primary">Buy Products</button>
-        </form>
-      <% } else { %>
-        <a href="/login">Log in to proceed and purchase the items.</a>
-      <% } %>
-    </section>
+        <% } %>
+      </section>
+      <section id="totals">
+        <p>Total: <span id="cart-total-price"><%= cartData.totalPrice%></span></p>
+        <% if (locals.isAuth) { %>
+          <form action="/cart/checkout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn btn-primary">Buy Products</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Log in to proceed and purchase the items.</a>
+        <% } %>
+      </section>
+    <% } %>
   </main>
 </body>
 </html>

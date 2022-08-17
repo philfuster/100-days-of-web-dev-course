@@ -17,6 +17,11 @@ router.post("/cart/add", makeSafe(customerController.addProductToCart));
 
 router.post("/cart/update", makeSafe(customerController.updateItemQuantity));
 
+router.post(
+	"/cart/deleteItem",
+	makeSafe(customerController.removeItemFromCart)
+);
+
 router.use(guardRoute);
 
 router.post("/cart/checkout", makeSafe(customerController.checkOut));

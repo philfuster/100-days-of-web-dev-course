@@ -22,7 +22,7 @@ async function getSingleProduct(req, res) {
 		return res.redirect("404");
 	}
 
-	const sessionCartData = cartSession.tgetCartSessionData(req, {
+	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
 
@@ -162,7 +162,6 @@ async function checkOut(req, res) {
 	const cartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	console.log(cartData);
 	const user = new User(
 		null,
 		null,
@@ -189,7 +188,6 @@ async function checkOut(req, res) {
 		cartData.quantity,
 		"PENDING"
 	);
-	console.log(order);
 	const orderIsValid = await orderValidation.orderIsValid(order);
 	if (!orderIsValid) {
 		return res.redirect("/500");
@@ -208,6 +206,42 @@ async function checkOut(req, res) {
 	);
 }
 
+async function removeItemFromCart(req, res) {
+	const { productId } = req.body;
+	const cartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	const currencyFormatter = new Intl.NumberFormat("en-US", {
+		currency: "USD",
+		style: "currency",
+	});
+	let itemRemoved = false;
+	cartData.items = cartData.items.filter((item) => {
+		if (item.id === productId) itemRemoved = true;
+		return item.id !== productId;
+	});
+	if (!itemRemoved)
+		return res.json({ hasError: true, message: "invalid product" });
+	const { totalPrice, totalQuantity } = cartData.items.reduce(
+		(accumulator, item) => {
+			accumulator.totalPrice += item.totalPrice;
+			accumulator.totalQuantity += item.quantity;
+			return accumulator;
+		},
+		{
+			totalPrice: 0,
+			totalQuantity: 0,
+		}
+	);
+	cartData.totalPrice = totalPrice;
+	cartData.quantity = totalQuantity;
+	return res.json({
+		hasError: false,
+		cartTotalPrice: currencyFormatter.format(totalPrice),
+		totalQuantity,
+	});
+}
+
 module.exports = {
 	getProducts,
 	getSingleProduct,
@@ -215,4 +249,5 @@ module.exports = {
 	addProductToCart,
 	updateItemQuantity,
 	checkOut,
+	removeItemFromCart,
 };
