@@ -11,12 +11,15 @@
         </li>
       <% } %>
       <% if (locals.isAuth) { %>
-      <li>
-        <form action="/logout" method="POST">
-          <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-          <button class="btn btn-secondary">Logout</button>
-        </form>
-      </li>
+        <li>
+          <a href="/orders">Orders</a>
+        </li>
+        <li>
+          <form action="/logout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+            <button class="btn btn-secondary">Logout</button>
+          </form>
+        </li>
       <% } %>
     </ul>
   </nav>
