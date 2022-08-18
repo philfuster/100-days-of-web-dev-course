@@ -26,4 +26,6 @@ router.use(guardRoute);
 
 router.post("/cart/checkout", makeSafe(customerController.checkOut));
 
+router.get("/orders", makeSafe(customerController.getOrders));
+
 module.exports = router;

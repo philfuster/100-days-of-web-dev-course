@@ -17,6 +17,15 @@ class Order {
 		}
 	}
 
+	static async getOrdersWithSameUser(userId) {
+		const orders = await db
+			.getDb()
+			.collection("orders")
+			.find({ "user.id": new ObjectId(userId) })
+			.toArray();
+		return orders;
+	}
+
 	async fetch() {
 		const order = await db
 			.getDb()

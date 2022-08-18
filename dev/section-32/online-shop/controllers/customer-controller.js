@@ -78,7 +78,7 @@ async function addProductToCart(req, res) {
 
 	let itemUpdated = false;
 	cartData.items.forEach((item) => {
-		if (item.id !== productId) return;
+		if (!item.id.equals(productId)) return;
 		item.quantity += 1;
 		item.totalPrice += item.price;
 		cartData.totalPrice += item.price;
@@ -98,7 +98,7 @@ async function addProductToCart(req, res) {
 			return res.json({ hasError: true, message: "Product not found." });
 		}
 		cartData.items.push({
-			id: existingProduct.id.toString(),
+			id: existingProduct.id,
 			name: existingProduct.name,
 			price: existingProduct.price,
 			totalPrice: existingProduct.price,
@@ -126,7 +126,7 @@ async function updateItemQuantity(req, res) {
 	let itemUpdated = false;
 	let lineTotalPrice = 0;
 	cartData.items.forEach((item) => {
-		if (item.id !== productid) return;
+		if (!item.id.equals(productid)) return;
 		item.quantity = parseInt(quantity);
 		lineTotalPrice = item.price * quantity;
 		item.totalPrice = lineTotalPrice;
@@ -177,6 +177,7 @@ async function checkOut(req, res) {
 	}
 	const order = new Order(
 		{
+			id: user.id,
 			fullName: user.fullName,
 			street: user.street,
 			postalCode: user.postalCode,
@@ -217,8 +218,8 @@ async function removeItemFromCart(req, res) {
 	});
 	let itemRemoved = false;
 	cartData.items = cartData.items.filter((item) => {
-		if (item.id === productId) itemRemoved = true;
-		return item.id !== productId;
+		if (item.id.equals(productId)) itemRemoved = true;
+		return !item.id.equals(productId);
 	});
 	if (!itemRemoved)
 		return res.json({ hasError: true, message: "invalid product" });
@@ -242,6 +243,41 @@ async function removeItemFromCart(req, res) {
 	});
 }
 
+async function getOrders(req, res) {
+	const { id: userId } = req.session.user;
+	const currencyFormatter = new Intl.NumberFormat("en-US", {
+		currency: "USD",
+		style: "currency",
+	});
+	const cartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	const orders = await Order.getOrdersWithSameUser(userId);
+	const displayOrders = orders.map((order) => {
+		const displayOrder = {
+			formattedTotalPrice: currencyFormatter.format(order.totalPrice),
+			formattedQuantity: currencyFormatter.format(order.quantity),
+			status: order.status,
+			formattedDate: new Date(order.date).toLocaleString("en-US", {
+				weekday: "short",
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			}),
+			items: order.items.map((item) => {
+				return {
+					name: item.name,
+					formattedPrice: currencyFormatter.format(item.price),
+					formattedTotalPrice: currencyFormatter.format(item.totalPrice),
+					quantity: item.quantity,
+				};
+			}),
+		};
+		return displayOrder;
+	});
+	res.render("customer/orders", { orders: displayOrders, cartData });
+}
+
 module.exports = {
 	getProducts,
 	getSingleProduct,
@@ -250,4 +286,5 @@ module.exports = {
 	updateItemQuantity,
 	checkOut,
 	removeItemFromCart,
+	getOrders,
 };

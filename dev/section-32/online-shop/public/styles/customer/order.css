@@ -1,0 +1,41 @@
+main {
+	text-align: left;
+}
+
+.order {
+	background-color: var(--color-grey-400);
+	padding: 0.5rem;
+	margin-bottom: 10px;
+	border-radius: 3px;
+}
+
+.order p {
+	margin: 0;
+}
+
+.order-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.order-price {
+	color: var(--color-primary-600);
+}
+
+.order-status {
+	padding: 0.25rem 0.5rem;
+	border-radius: 16px;
+	text-transform: uppercase;
+	background-color: var(--color-secondary-400);
+}
+
+.order-detail ul {
+	margin-left: 25px;
+	padding: 0.5rem 0;
+}
+
+.order-detail li {
+	list-style: disc;
+	margin-bottom: 3px;
+}
