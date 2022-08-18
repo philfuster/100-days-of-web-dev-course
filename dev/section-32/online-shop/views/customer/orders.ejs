@@ -1,10 +1,10 @@
-<%- include('../includes/head.ejs', { title: 'Your Cart' }) %>
+<%- include('../shared/includes/head.ejs', { title: 'Your Cart' }) %>
 <meta name="csrf-token", content="<%= csrfToken%>">
 <link rel="stylesheet" href="/styles/customer/order.css">
 <script src="/scripts/cart.js" defer></script>
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include('../shared/includes/header.ejs') %>
   <main>
     <% if (orders.length < 1) { %>
       <h1>No Orders Placed.</h1>
@@ -25,7 +25,7 @@
                     <span class="item-name"><%= item.name %></span>
                     -
                     <span class="item-total-price"><%= item.formattedTotalPrice%></span>
-                    <span class="item-unit-price"><%= item.price %> x <%= item.quantity %></span>
+                    <span class="item-unit-price">(<%= item.formattedPrice %> x <%= item.quantity %>)</span>
                   </li>
                 <% } %>
               </ul>

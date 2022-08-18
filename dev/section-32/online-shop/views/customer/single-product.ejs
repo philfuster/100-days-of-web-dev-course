@@ -1,10 +1,10 @@
-<%- include('../includes/head.ejs', { title: 'Welcome' }) %>
+<%- include('../shared/includes/head.ejs', { title: 'Welcome' }) %>
 <link rel="stylesheet" href="/styles/customer/product-detail.css">
 <script src="/scripts/single-product.js" defer></script>
 <meta name="csrf-token", content="<%= csrfToken%>">
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include('../shared/includes/header.ejs') %>
   <main>
     <div id="product-item">
       <img src="<%= product.imagePath%>" alt="<%= product.alt %>" />

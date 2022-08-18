@@ -9,7 +9,7 @@ async function getProducts(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("customer/products", { products, cartData: sessionCartData });
+	res.render("shared/products", { products, cartData: sessionCartData });
 }
 
 async function getSingleProduct(req, res) {

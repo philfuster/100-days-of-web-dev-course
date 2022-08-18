@@ -4,7 +4,7 @@ function getHome(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("index", { cartData: sessionCartData });
+	res.render("shared/index", { cartData: sessionCartData });
 }
 
 module.exports = {
