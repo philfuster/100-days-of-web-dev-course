@@ -1,15 +1,15 @@
 const Product = require("../models/product");
 const User = require("../models/user");
 const Order = require("../models/order");
-const orderValidation = require("../util/order-validation");
-const cartSession = require("../util/cart-session");
+const orderValidation = require("../util/order.validation");
+const cartSession = require("../util/cart.session");
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("shared/products", { products, cartData: sessionCartData });
+	res.render("customer/products", { products, cartData: sessionCartData });
 }
 
 async function getSingleProduct(req, res) {
@@ -173,7 +173,7 @@ async function checkOut(req, res) {
 	);
 	await user.fetch();
 	if (user.fullName == null || user.email == null) {
-		return res.redirect("/500");
+		throw "Invalid User";
 	}
 	const order = new Order(
 		{
@@ -191,7 +191,7 @@ async function checkOut(req, res) {
 	);
 	const orderIsValid = await orderValidation.orderIsValid(order);
 	if (!orderIsValid) {
-		return res.redirect("/500");
+		throw "Invalid Order";
 	}
 
 	await order.save();

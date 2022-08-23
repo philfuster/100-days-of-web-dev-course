@@ -1,27 +1,7 @@
 const User = require("../models/user");
 const validation = require("../util/validation");
-const validationSession = require("../util/validation-session");
-const cartSession = require("../util/cart-session");
-
-function get401(req, res) {
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	res.status(401).render("401", { cartData: sessionCartData });
-}
-
-function get404(req, res) {
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	res.status(404).render("404", { cartData: sessionCartData });
-}
-function get500(req, res) {
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	res.status(500).render("500", { cartData: sessionCartData });
-}
+const validationSession = require("../util/validation.session");
+const cartSession = require("../util/cart.session");
 
 function getSignup(req, res) {
 	const sessionErrorData = validationSession.getSessionErrorData(req, {
@@ -159,22 +139,25 @@ async function login(req, res) {
 	};
 
 	req.session.isAuthenticated = true;
+	req.session.isAdmin = existingUser.isAdmin;
 	req.session.save(function () {
-		res.redirect("/");
+		if (existingUser.isAdmin) {
+			res.redirect("/admin/products");
+		} else {
+			res.redirect("/products");
+		}
 	});
 }
 
 function logout(req, res) {
 	req.session.user = null;
 	req.session.isAuthenticated = false;
+	req.session.isAdmin = false;
 	res.redirect("/");
 }
 
 module.exports = {
 	getSignup,
-	get401,
-	get404,
-	get500,
 	signup,
 	getLogin,
 	login,

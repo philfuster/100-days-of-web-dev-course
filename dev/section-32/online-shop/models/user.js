@@ -11,6 +11,7 @@ class User {
 		this.street = street;
 		this.postalCode = postalCode;
 		this.city = city;
+		this.isAdmin = false;
 		if (id) {
 			this.id = new ObjectId(id);
 		}
@@ -28,6 +29,7 @@ class User {
 		this.postalCode = existingUser.postalCode;
 		this.city = existingUser.city;
 		this.password = existingUser.password;
+		this.isAdmin = existingUser.isAdmin;
 	}
 
 	async getUserWithSameEmail() {
@@ -58,6 +60,7 @@ class User {
 			street: this.street,
 			postalCode: this.postalCode,
 			city: this.city,
+			isAdmin: this.isAdmin,
 		});
 
 		return result;

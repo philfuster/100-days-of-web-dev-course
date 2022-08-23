@@ -1,12 +1,12 @@
-<%- include('../includes/head.ejs', { title: 'Signup' }) %>
+<%- include('../shared/includes/head.ejs', { title: 'Signup' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include('../shared/includes/header.ejs') %>
   <main>
     <h1>Create New Account</h1>
-    <%-include("../includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
+    <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form id="auth-form" method="post" action="/signup" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
       <div class="form-control">
@@ -38,7 +38,7 @@
         <label for="city">City</label>
         <input type="text" name="city" id="city" value="<%= inputData.city %>"required />
       </div>
-      <button class="btn">Create Account</button>
+      <button class="btn btn-primary">Create Account</button>
       <div id="auth-alternative">
         <a href="/login" class="btn btn-alt">Login instead</a>
       </div>

@@ -2,8 +2,19 @@
   <img src="<%= product.imagePath %>" alt="<%= product.alt %>" />
   <div class="product-list-item-detail">
     <h3><%= product.name %></h3>
-    <form action="/products/<%= product._id %>" method="GET">
-      <button class="btn btn-secondary">View Detail</button>
-    </form>
+    <div class="product-list-item-actions">
+      <% if (locals.isAdmin) { %>
+        <form action="/admin/products/<%= product._id %>" method="GET">
+          <button class="btn btn-secondary">View & Edit</button>
+        </form>
+        <form action="/admin/products/<%= product._id %>/delete" method="POST">
+          <button class="btn btn-secondary product-delete-btn">Delete</button>
+        </form>
+      <% } else { %>
+        <form action="/products/<%= product._id %>" method="GET">
+          <button class="btn btn-secondary">View Detail</button>
+        </form>
+      <% } %>
+    </div>
   </div>
 </div>

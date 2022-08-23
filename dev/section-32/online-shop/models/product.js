@@ -1,6 +1,5 @@
 const mongodb = require("mongodb");
 const db = require("../data/database");
-const bcrypt = require("bcryptjs");
 
 const { ObjectId } = mongodb;
 
@@ -32,6 +31,34 @@ class Product {
 		this.description = product.description;
 		this.price = product.price;
 		this.imagePath = product.imagePath;
+	}
+
+	async getProductWithSameName() {
+		const existingProduct = await db
+			.getDb()
+			.collection("products")
+			.findOne({ name: this.name });
+		return existingProduct;
+	}
+
+	async existsAlready() {
+		const existingProduct = await this.getProductWithSameName();
+		if (existingProduct) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	async save() {
+		const result = await db.getDb().collection("products").insertOne({
+			name: this.name,
+			summary: this.summary,
+			description: this.description,
+			imagePath: this.imagePath,
+			price: this.price,
+		});
+		return result;
 	}
 }
 

@@ -1,6 +1,9 @@
+#product-list {
+	margin: 1rem 0;
+}
 #product-list ul {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, 200px);
+	grid-template-columns: repeat(auto-fill, 250px);
 	gap: 10px;
 }
 
@@ -8,6 +11,7 @@
 	background-color: var(--color-grey-700);
 	border-radius: 5px;
 	overflow: hidden;
+	text-align: center;
 }
 
 .product-list-item h3 {
@@ -15,9 +19,10 @@
 }
 
 .product-list-item img {
-	width: 200px;
-	height: 200px;
+	width: 275px;
+	height: 150px;
 	box-sizing: border-box;
+	object-fit: fill;
 }
 
 .product-list-item-detail {
@@ -27,7 +32,16 @@
 .product-list-item-detail button {
 	background-color: var(--color-grey-700);
 	color: var(--color-primary-500);
+	height: 100%;
 }
 .product-list-item button:hover {
 	background-color: var(--color-grey-400);
+}
+
+.product-list-item-actions {
+	display: flex;
+}
+
+.product-list-item-actions .product-delete-btn {
+	margin-left: 5px;
 }

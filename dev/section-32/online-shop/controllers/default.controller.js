@@ -1,4 +1,4 @@
-const cartSession = require("../util/cart-session");
+const cartSession = require("../util/cart.session");
 
 function getHome(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {

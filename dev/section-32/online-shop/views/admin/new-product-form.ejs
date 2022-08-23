@@ -1,0 +1,42 @@
+<%- include('../shared/includes/head.ejs', { title: 'Update Product' }) %>
+<link rel="stylesheet" href="/styles/forms.css">
+<link rel="stylesheet" href="/styles/admin/product-form.css">
+<script src="/scripts/product-form.js" defer></script>
+</head>
+<body>
+  <%-include('../shared/includes/header.ejs') %>
+  <main>
+    <h1>Add New Product</h1>
+    <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
+    <form action="/admin/products/new" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
+      <div id="product-item">
+        <div class="form-control">
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" value="<%= inputData.name%>" required />
+        </div>
+        <div class="form-control">
+          <label for="image">Image</label>
+          <input type="file" name="image" id="image" value="<%= inputData.image%>" required accept="image/jpg, image/jpeg, image/png"/>
+          <img id="image-preview" alt="Your picked image.">
+        </div>
+        <div class="form-control">
+          <label for="summary">Summary</label>
+          <input type="text" name="summary" id="summary" value="<%= inputData.summary%>" required />
+        </div>
+        <div class="form-control">
+          <label for="price">Price</label>
+          <input type="number" name="price" id="price" value="<%= inputData.price%>" min="0" max="999999" required />
+        </div>
+        <div class="form-control">
+          <label for="description">Description</label>
+          <textarea name="description" id="description" cols="50" rows="10"><%= inputData.description %></textarea>
+        </div>
+      <div id="product-actions">
+        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

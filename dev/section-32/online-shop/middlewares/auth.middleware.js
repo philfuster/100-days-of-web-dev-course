@@ -5,8 +5,8 @@ async function auth(req, res, next) {
 	if (user == null || !isAuth) {
 		return next();
 	}
-	if (isAdmin) res.locals.isAdmin = true;
 	res.locals.isAuth = isAuth;
+	res.locals.isAdmin = isAdmin;
 	res.locals.user = user;
 	next();
 }

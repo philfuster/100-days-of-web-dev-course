@@ -11,7 +11,6 @@ async function addProductToCart(event) {
 	const productInfo = {
 		productId,
 	};
-
 	const response = await fetch(`/cart/add`, {
 		method: "POST",
 		body: JSON.stringify(productInfo),
@@ -20,7 +19,6 @@ async function addProductToCart(event) {
 			"CSRF-Token": csrfToken,
 		},
 	});
-
 	if (!response.hasError) {
 		const cartQuantity = parseInt(cartQuantityElement.textContent);
 		cartQuantityElement.textContent = cartQuantity + 1;
