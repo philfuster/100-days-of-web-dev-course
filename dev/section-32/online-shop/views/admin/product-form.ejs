@@ -2,14 +2,13 @@
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/admin/product-form.css">
 <script src="/scripts/product-form.js" defer></script>
-<meta name="csrf-token", content="<%= csrfToken%>">
 </head>
 <body>
   <%-include('../shared/includes/header.ejs') %>
   <main>
     <h1>Update Product</h1>
     <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
-    <form action="/admin/products/:id" method="POST" enctype="multipart/form-data">
+    <form action="/admin/products/:id/?_csrf=<%= locals.csrfToken%>" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
       <div id="product-item">
         <div class="form-control">

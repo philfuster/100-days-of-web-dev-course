@@ -1,5 +1,7 @@
 const Product = require("../models/product");
 const validationSession = require("../util/validation.session");
+const productValidation = require("../util/product.validation");
+
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
 	return res.render("admin/products", { products });
@@ -33,10 +35,9 @@ async function getSingleProduct(req, res) {
 }
 
 async function saveNewProduct(req, res) {
-	const { id: productId } = req.params;
 	const { file: uploadedImageFile } = req;
 	const {
-		name: enteredName,
+		title: enteredName,
 		summary: enteredSummary,
 		price: enteredPrice,
 		description: enteredDescription,
@@ -45,9 +46,9 @@ async function saveNewProduct(req, res) {
 		enteredName,
 		enteredSummary,
 		enteredPrice,
-		uploadedImageFile.path,
+		`/${uploadedImageFile.path.replace(/\\/g, "/")}`,
 		enteredDescription,
-		productId
+		null
 	);
 	const productIsValid = productValidation.productIsValid(product);
 	if (!productIsValid) {
@@ -62,13 +63,13 @@ async function saveNewProduct(req, res) {
 				price: enteredPrice,
 			},
 			function () {
-				res.redirect(`/admin/products/${productId}`);
+				res.redirect(`/admin/products`);
 			}
 		);
 		return;
 	}
 	const existingProduct = product.getProductWithSameName();
-	if (!existingProduct.id.equals(productId)) {
+	if (existingProduct.id != null) {
 		validationSession.flashErrorsToSession(
 			req,
 			{
@@ -80,7 +81,7 @@ async function saveNewProduct(req, res) {
 				description: enteredDescription,
 			},
 			function () {
-				res.redirect(`/admin/products/${productId}`);
+				res.redirect(`/admin/products/`);
 			}
 		);
 		return;

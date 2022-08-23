@@ -8,8 +8,8 @@
   <main>
     <h1>Add New Product</h1>
     <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
-    <form action="/admin/products/new" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
+    <form action="/admin/products/new?_csrf=<%= locals.csrfToken%>" method="POST" enctype="multipart/form-data">
+      <!-- <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" /> -->
       <div id="product-item">
         <div class="form-control">
           <label for="title">Title</label>
@@ -17,7 +17,7 @@
         </div>
         <div class="form-control">
           <label for="image">Image</label>
-          <input type="file" name="image" id="image" value="<%= inputData.image%>" required accept="image/jpg, image/jpeg, image/png"/>
+          <input type="file" name="image" id="image" value="<%= inputData.imagePath%>" required accept="image/jpg, image/jpeg, image/png"/>
           <img id="image-preview" alt="Your picked image.">
         </div>
         <div class="form-control">

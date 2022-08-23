@@ -14,11 +14,11 @@ router.get("/admin/products/new", adminController.getNewProductForm);
 
 router.get("/admin/products/:id", makeSafe(adminController.getSingleProduct));
 
-router.post(
-	"/admin/products/:id",
-	multerConfig.upload.single("image"),
-	makeSafe(adminController.saveProduct)
-);
+// router.post(
+// 	"/admin/products/:id",
+// 	multerConfig.upload.single("image"),
+// 	makeSafe(adminController.saveProduct)
+// );
 
 router.post(
 	"/admin/products/new",

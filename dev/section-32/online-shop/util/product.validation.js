@@ -11,4 +11,6 @@ async function productIsValid(product) {
 	);
 }
 
-module.exports = productIsValid;
+module.exports = {
+	productIsValid,
+};

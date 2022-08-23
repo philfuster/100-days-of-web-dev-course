@@ -82,7 +82,7 @@ async function signup(req, res) {
 				email,
 				confirmEmail,
 				password,
-				fullName,
+				name,
 				street,
 				postalCode,
 				city,
