@@ -50,7 +50,7 @@ class Product {
 		}
 	}
 
-	async save() {
+	async create() {
 		const result = await db.getDb().collection("products").insertOne({
 			name: this.name,
 			summary: this.summary,
@@ -58,6 +58,44 @@ class Product {
 			imagePath: this.imagePath,
 			price: this.price,
 		});
+		return result;
+	}
+
+	async update() {
+		const result = await db
+			.getDb()
+			.collection("products")
+			.updateOne(
+				{ _id: this.id },
+				{
+					$set: {
+						name: this.name,
+						summary: this.summary,
+						description: this.description,
+						imagePath: this.imagePath,
+						price: this.price,
+					},
+				}
+			);
+		return result;
+	}
+
+	equals(product) {
+		return (
+			product.name === this.name &&
+			product.price === this.price &&
+			product.description === this.description &&
+			product.summary === this.summary &&
+			product.imagePath === this.imagePath
+		);
+	}
+
+	async delete() {
+		if (this.id == null) return;
+		const result = await db
+			.getDb()
+			.collection("products")
+			.deleteOne({ _id: this.id });
 		return result;
 	}
 }

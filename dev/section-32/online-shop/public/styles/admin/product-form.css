@@ -11,8 +11,11 @@ input[type="file"] {
 }
 
 #image-preview {
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 10rem;
+	height: 10rem;
 	object-fit: cover;
+}
+
+#image-preview[src=""] {
 	display: none;
 }

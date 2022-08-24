@@ -18,6 +18,8 @@ const errorRoutes = require("./routes/error.routes");
 
 const app = express();
 
+global.__basedir = __dirname;
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 

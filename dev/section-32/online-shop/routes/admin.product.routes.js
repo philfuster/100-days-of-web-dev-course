@@ -17,16 +17,21 @@ router.get(
 	makeSafe(adminProductController.getSingleProduct)
 );
 
-// router.post(
-// 	"/admin/products/:id",
-// 	multerConfig.upload.single("image"),
-// 	makeSafe(adminController.saveProduct)
-// );
-
 router.post(
 	"/admin/products/new",
 	multerConfig.upload.single("image"),
-	makeSafe(adminProductController.saveNewProduct)
+	makeSafe(adminProductController.createProduct)
+);
+
+router.post(
+	"/admin/products/:id",
+	multerConfig.upload.single("image"),
+	makeSafe(adminProductController.saveProduct)
+);
+
+router.post(
+	"/admin/products/:id/delete",
+	makeSafe(adminProductController.deleteProduct)
 );
 
 module.exports = router;

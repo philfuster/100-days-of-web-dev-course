@@ -1,5 +1,6 @@
 const filePickerElement = document.getElementById("image");
 const imagePreviewElement = document.getElementById("image-preview");
+const fileUploadBtnElement = document.getElementById("file-upload-btn");
 
 function showPreview(event) {
 	const files = filePickerElement.files;
@@ -12,4 +13,12 @@ function showPreview(event) {
 	imagePreviewElement.style.display = "block";
 }
 
+function showFilePicker(event) {
+	event.preventDefault();
+	filePickerElement.click();
+	return;
+}
+
 filePickerElement.addEventListener("change", showPreview);
+
+fileUploadBtnElement.addEventListener("click", showFilePicker);
