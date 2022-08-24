@@ -10,8 +10,10 @@ const error404HandlerMiddleware = require("./middlewares/error.404.handler");
 const db = require("./data/database");
 const defaultRoutes = require("./routes/default.routes");
 const authRoutes = require("./routes/auth.router");
-const shopRoutes = require("./routes/customer.routes");
-const adminRoutes = require("./routes/admin.routes");
+const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/order.routes");
+const productRoutes = require("./routes/product.routes");
+const adminProductRoutes = require("./routes/admin.product.routes");
 const errorRoutes = require("./routes/error.routes");
 
 const app = express();
@@ -33,8 +35,10 @@ app.use(authMiddleware);
 app.use(defaultRoutes);
 app.use(errorRoutes);
 app.use(authRoutes);
-app.use(shopRoutes);
-app.use(adminRoutes);
+app.use(productRoutes);
+app.use(cartRoutes);
+app.use(orderRoutes);
+app.use(adminProductRoutes);
 
 app.use(error404HandlerMiddleware);
 app.use(error500HandlerMiddleware);

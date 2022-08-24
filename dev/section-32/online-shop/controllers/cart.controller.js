@@ -1,42 +1,5 @@
-const Product = require("../models/product");
-const User = require("../models/user");
-const Order = require("../models/order");
-const orderValidation = require("../util/order.validation");
 const cartSession = require("../util/cart.session");
-
-async function getProducts(req, res) {
-	const products = await Product.fetchAll();
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	res.render("customer/products", { products, cartData: sessionCartData });
-}
-
-async function getSingleProduct(req, res) {
-	const { id } = req.params;
-	const product = new Product(null, null, null, null, null, id);
-
-	await product.fetch();
-
-	if (!product.name) {
-		return res.redirect("404");
-	}
-
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-
-	product.formattedPrice = new Intl.NumberFormat("en-US", {
-		currency: "USD",
-		style: "currency",
-	}).format(product.price);
-
-	res.render("customer/single-product", {
-		product,
-		csrfToken: req.csrfToken(),
-		cartData: sessionCartData,
-	});
-}
+const Product = require("../models/product");
 
 async function getCart(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
@@ -49,7 +12,6 @@ async function getCart(req, res) {
 	});
 
 	const items = sessionCartData.items.map((item) => {
-		const lineTotal = item.price * item.quantity;
 		const displayItem = {
 			id: item.id,
 			name: item.name,
@@ -243,48 +205,9 @@ async function removeItemFromCart(req, res) {
 	});
 }
 
-async function getOrders(req, res) {
-	const { id: userId } = req.session.user;
-	const currencyFormatter = new Intl.NumberFormat("en-US", {
-		currency: "USD",
-		style: "currency",
-	});
-	const cartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	const orders = await Order.getOrdersWithSameUser(userId);
-	const displayOrders = orders.map((order) => {
-		const displayOrder = {
-			formattedTotalPrice: currencyFormatter.format(order.totalPrice),
-			formattedQuantity: currencyFormatter.format(order.quantity),
-			status: order.status,
-			formattedDate: new Date(order.date).toLocaleString("en-US", {
-				weekday: "short",
-				year: "numeric",
-				month: "long",
-				day: "numeric",
-			}),
-			items: order.items.map((item) => {
-				return {
-					name: item.name,
-					formattedPrice: currencyFormatter.format(item.price),
-					formattedTotalPrice: currencyFormatter.format(item.totalPrice),
-					quantity: item.quantity,
-				};
-			}),
-		};
-		return displayOrder;
-	});
-	res.render("customer/orders", { orders: displayOrders, cartData });
-}
-
 module.exports = {
-	getProducts,
-	getSingleProduct,
 	getCart,
 	addProductToCart,
 	updateItemQuantity,
-	checkOut,
 	removeItemFromCart,
-	getOrders,
 };

@@ -73,17 +73,25 @@ deleteBtnElements.forEach((el) => {
 	el.addEventListener("click", deleteItemFromCart);
 });
 
+const cartItemQuantityElements = document.getElementsByClassName('productQuantity');
+const cartItemQuantities = cartItemQuantityElements.map((el) => {
+	return {
+		qty: el.value,
+		id: el.dataset['productid']
+	};
+});
+
 function enableUpdateButton(event) {
 	const productQuantityInputElement = event.target;
 	const { productid } = productQuantityInputElement.dataset;
 	const updateBtnElement = document.getElementById(`update-btn-${productid}`);
+	const {qty: originalQty} = cartItemQuantities.find((cartItem) => {
+		return cartItem.id === productid
+	});
+	if (originalQty)
 	updateBtnElement.removeAttribute("disabled");
-	console.dir(updateBtnElement);
 }
 
-const productQuantityInputElements = document.querySelectorAll(
-	"input[type='number']"
-);
 
 productQuantityInputElements.forEach((el) => {
 	el.addEventListener("change", enableUpdateButton);

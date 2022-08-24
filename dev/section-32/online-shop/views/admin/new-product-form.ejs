@@ -9,7 +9,6 @@
     <h1>Add New Product</h1>
     <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form action="/admin/products/new?_csrf=<%= locals.csrfToken%>" method="POST" enctype="multipart/form-data">
-      <!-- <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" /> -->
       <div id="product-item">
         <div class="form-control">
           <label for="title">Title</label>

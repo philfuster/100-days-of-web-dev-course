@@ -19,7 +19,7 @@
               <p><span id="product-total-price-<%= item.id %>"><%= item.formattedTotalPrice %></span> <em class="unit-price">(<%= item.formattedPrice%>)</em></p>
             </div>
             <div class="cart-item-actions">
-              <input type="number" id="product-quantity-<%= item.id%>" data-productid="<%= item.id %>" value="<%= item.quantity %>" min="1" max="99">
+              <input type="number" id="product-quantity-<%= item.id%>" data-productid="<%= item.id %>" class="product-quantity" value="<%= item.quantity %>" min="1" max="99">
               <div>
                 <input class="update-btn" id="update-btn-<%= item.id %>" type="submit" data-productid="<%= item.id %>" value="Update" disabled>
                 <input class="delete-btn" type="submit" data-productid="<%= item.id %>" value="Delete">
