@@ -132,13 +132,12 @@ async function saveProduct(req, res) {
 				req,
 				{
 					hasError: true,
-					message:
-						"Invalid name entered. Another product exists with it already.",
+					message: `Invalid product name, "${enteredProduct.name}" entered. Another product exists with it already.`,
 					name: existingProduct.name,
 					summary: enteredSummary,
 					description: enteredDescription,
 					price: enteredPrice,
-					// restore on-file image path. Resetting the flow, allowing user to still change to a new pic if they want.
+					// restore on-file image path. Resetting the flow, allowing user to change to a new pic if they want.
 					imagePath: existingProduct.imagePath,
 				},
 				function () {
@@ -197,9 +196,13 @@ function getNewProductForm(req, res) {
 
 async function deleteProduct(req, res) {
 	const { id: productId } = req.params;
-	// todo: delete requirements: should not be on an open order.
+	// to consider: delete requirements: should not be on an open order.
 	const existingProduct = new Product(null, null, null, null, null, productId);
-	await existingProduct.delete();
+	await existingProduct.fetch();
+	const result = await existingProduct.delete();
+	if (result.acknowledged && result.deletedCount === 1) {
+		await fsPromises.unlink(path.join(__basedir, existingProduct.imagePath));
+	}
 	res.redirect("/admin/products");
 }
 

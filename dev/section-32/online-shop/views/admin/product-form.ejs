@@ -17,6 +17,7 @@
         <div class="form-control">
           <label for="image">Image</label>
           <img id="image-preview" alt="Your picked image." src="<%= inputData.imagePath %>">
+          <!-- Can't style the file input uniformly across browsers. Easier to hide it & use a button to trigger the file picker. -->
           <button id="file-upload-btn" class="btn btn-primary">Upload Photo</button>
           <input type="file" name="image" id="image" accept="image/jpg, image/jpeg, image/png" style="display: none" />
         </div>
