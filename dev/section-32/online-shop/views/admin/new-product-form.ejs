@@ -16,7 +16,9 @@
         </div>
         <div class="form-control">
           <label for="image">Image</label>
-          <input type="file" name="image" id="image" value="<%= inputData.imagePath%>" required accept="image/jpg, image/jpeg, image/png"/>
+          <!-- Can't style the file input uniformly across browsers. Easier to hide it & use a button to trigger the file picker. -->
+          <button id="file-upload-btn" class="btn btn-primary">Upload Photo</button>
+          <input type="file" name="image" id="image" value="<%= inputData.imagePath%>" required accept="image/jpg, image/jpeg, image/png" style="display: none" />
           <img id="image-preview" alt="Your picked image." src="<%= inputData.imagePath%>">
         </div>
         <div class="form-control">
@@ -25,7 +27,7 @@
         </div>
         <div class="form-control">
           <label for="price">Price</label>
-          <input type="number" name="price" id="price" value="<%= inputData.price%>" min="0" max="999999" required />
+          <input type="number" name="price" id="price" value="<%= inputData.price%>" step="0.01" min="0" max="999999" required />
         </div>
         <div class="form-control">
           <label for="description">Description</label>

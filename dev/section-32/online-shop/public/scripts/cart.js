@@ -73,8 +73,9 @@ deleteBtnElements.forEach((el) => {
 	el.addEventListener("click", deleteItemFromCart);
 });
 
-const cartItemQuantityElements =
-	document.getElementsByClassName("productQuantity");
+const cartItemQuantityElements = Array.from(
+	document.getElementsByClassName("product-quantity")
+);
 const cartItemQuantities = cartItemQuantityElements.map((el) => {
 	return {
 		qty: el.value,
@@ -89,9 +90,13 @@ function enableUpdateButton(event) {
 	const { qty: originalQty } = cartItemQuantities.find((cartItem) => {
 		return cartItem.id === productid;
 	});
-	if (originalQty) updateBtnElement.removeAttribute("disabled");
+	if (originalQty !== productQuantityInputElement.value) {
+		updateBtnElement.removeAttribute("disabled");
+	} else {
+		updateBtnElement.setAttribute("disabled", true);
+	}
 }
 
-productQuantityInputElements.forEach((el) => {
+cartItemQuantityElements.forEach((el) => {
 	el.addEventListener("change", enableUpdateButton);
 });

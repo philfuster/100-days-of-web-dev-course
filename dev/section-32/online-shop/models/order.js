@@ -1,17 +1,21 @@
 const mongodb = require("mongodb");
 const db = require("../data/database");
-const bcrypt = require("bcryptjs");
 
 const { ObjectId } = mongodb;
 
 class Order {
+	static validOrderStatuses = {
+		PENDING: "PENDING",
+		FULFILLED: "FULFILLED",
+		CANCELED: "CANCELED",
+	};
 	constructor(user, date, items, totalPrice, totalQuantity, status, id) {
 		this.user = user;
 		this.date = date;
 		this.items = items;
 		this.status = status;
-		this.totalPrice = totalPrice;
-		this.totalQuantity = totalQuantity;
+		this.totalPrice = parseFloat(Number(totalPrice).toFixed(2));
+		this.totalQuantity = parseInt(Number(totalQuantity).toFixed(0));
 		if (id) {
 			this.id = new ObjectId(id);
 		}
@@ -26,6 +30,11 @@ class Order {
 		return orders;
 	}
 
+	static async fetchAll() {
+		const orders = await db.getDb().collection("orders").find({}).toArray();
+		return orders;
+	}
+
 	async fetch() {
 		const order = await db
 			.getDb()
@@ -33,7 +42,6 @@ class Order {
 			.findOne({ _id: this.id });
 		if (order == null) return null;
 		this.user = order.user;
-		this.summary = order.summary;
 		this.date = order.date;
 		this.items = order.items;
 		this.totalPrice = order.totalPrice;
@@ -42,6 +50,9 @@ class Order {
 	}
 
 	async save() {
+		if (!Order.validOrderStatuses.hasOwnProperty(this.status)) {
+			throw "Invalid status provided!!";
+		}
 		const result = await db.getDb().collection("orders").insertOne({
 			user: this.user,
 			date: this.date,
@@ -50,6 +61,24 @@ class Order {
 			totalQuantity: this.totalQuantity,
 			status: this.status,
 		});
+		return result;
+	}
+
+	async updateStatus() {
+		if (!Order.validOrderStatuses.hasOwnProperty(this.status)) {
+			throw "Invalid status provided!!";
+		}
+		const result = await db
+			.getDb()
+			.collection("orders")
+			.updateOne(
+				{ _id: this.id },
+				{
+					$set: {
+						status: this.status,
+					},
+				}
+			);
 		return result;
 	}
 }

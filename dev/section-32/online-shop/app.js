@@ -14,6 +14,7 @@ const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 const productRoutes = require("./routes/product.routes");
 const adminProductRoutes = require("./routes/admin.product.routes");
+const adminOrderRoutes = require("./routes/admin.order.routes");
 const errorRoutes = require("./routes/error.routes");
 
 const app = express();
@@ -41,6 +42,7 @@ app.use(productRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
 app.use(adminProductRoutes);
+app.use(adminOrderRoutes);
 
 app.use(error404HandlerMiddleware);
 app.use(error500HandlerMiddleware);

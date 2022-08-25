@@ -14,7 +14,7 @@ async function getOrders(req, res) {
 	const displayOrders = orders.map((order) => {
 		const displayOrder = {
 			formattedTotalPrice: currencyFormatter.format(order.totalPrice),
-			formattedQuantity: currencyFormatter.format(order.quantity),
+			formattedQuantity: order.quantity,
 			status: order.status,
 			formattedDate: new Date(order.date).toLocaleString("en-US", {
 				weekday: "short",

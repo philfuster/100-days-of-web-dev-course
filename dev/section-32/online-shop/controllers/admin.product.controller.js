@@ -20,7 +20,7 @@ async function getSingleProduct(req, res) {
 		name: "",
 		imagePath: "",
 		summary: "",
-		price: "",
+		price: 0,
 		description: "",
 	});
 	const inputData = {
@@ -186,7 +186,7 @@ function getNewProductForm(req, res) {
 		name: "",
 		imagePath: "",
 		summary: "",
-		price: "",
+		price: 0,
 		description: "",
 	});
 	return res.render("admin/new-product-form", {

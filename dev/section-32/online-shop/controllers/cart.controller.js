@@ -1,5 +1,8 @@
 const cartSession = require("../util/cart.session");
+const Order = require("../models/order");
 const Product = require("../models/product");
+const User = require("../models/User");
+const orderValidation = require("../util/order.validation");
 
 async function getCart(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
@@ -77,7 +80,7 @@ async function addProductToCart(req, res) {
 }
 
 async function updateItemQuantity(req, res) {
-	const { productid, quantity } = req.body;
+	const { productid, quantity: enteredQuantity } = req.body;
 	const currencyFormatter = new Intl.NumberFormat("en-US", {
 		currency: "USD",
 		style: "currency",
@@ -89,8 +92,8 @@ async function updateItemQuantity(req, res) {
 	let lineTotalPrice = 0;
 	cartData.items.forEach((item) => {
 		if (!item.id.equals(productid)) return;
-		item.quantity = parseInt(quantity);
-		lineTotalPrice = item.price * quantity;
+		item.quantity = parseInt(enteredQuantity);
+		lineTotalPrice = item.price * enteredQuantity;
 		item.totalPrice = lineTotalPrice;
 		itemUpdated = true;
 	});
@@ -114,7 +117,7 @@ async function updateItemQuantity(req, res) {
 		res.json({
 			hasError: false,
 			cartTotalPrice: currencyFormatter.format(cartData.totalPrice),
-			totalQuantity: parseInt(totalQuantity),
+			totalQuantity: totalQuantity,
 			lineTotalPrice: currencyFormatter.format(lineTotalPrice),
 		});
 	});
@@ -149,7 +152,7 @@ async function checkOut(req, res) {
 		cartData.items,
 		cartData.totalPrice,
 		cartData.quantity,
-		"PENDING"
+		Order.validOrderStatuses.PENDING
 	);
 	const orderIsValid = await orderValidation.orderIsValid(order);
 	if (!orderIsValid) {
@@ -164,7 +167,7 @@ async function checkOut(req, res) {
 			...cartSession.defaultCartData,
 		},
 		function () {
-			return res.redirect("/cart");
+			return res.redirect("/products");
 		}
 	);
 }
@@ -210,4 +213,5 @@ module.exports = {
 	addProductToCart,
 	updateItemQuantity,
 	removeItemFromCart,
+	checkOut,
 };

@@ -7,7 +7,7 @@ class Product {
 	constructor(name, summary, price, imagePath, description, id) {
 		this.name = name;
 		this.summary = summary;
-		this.price = price;
+		this.price = parseFloat(Number(price).toFixed(2));
 		this.imagePath = imagePath;
 		this.description = description;
 		if (id) {

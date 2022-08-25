@@ -48,6 +48,8 @@ Should not have ot be logged in to add product to cart.
 
 view orders placed
 
+No maintenance of these orders for a customer that I saw. Will not implement order editing for regular users at this time.
+
 #### Pages after placing an Order
 
 - Error
@@ -69,6 +71,7 @@ view orders placed
 
 - View all Orders placed by All Users
 - Update an Order placed by a User.
+  - Update status - ex when shipped can update to fulfilled.
 
 ## Data Entities (Models)
 
