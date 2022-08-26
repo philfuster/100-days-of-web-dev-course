@@ -34,10 +34,10 @@
               </ul>
             </div>
             <div class="order-actions">
-              <select name="order-status-select-<%= order.id %>" id="order-status-select-<%= order.id %>" class="order-status-select">
-                <option value="PENDING">Pending</option>
-                <option value="FULFILLED">Fulfilled</option>
-                <option value="CANCELED">Canceled</option>
+              <select name="order-status-select-<%= order.id %>" id="order-status-select-<%= order.id %>" class="order-status-select" >
+                <option value="PENDING" <% if (order.status === "PENDING"){%>selected<% }%>>Pending</option>
+                <option value="FULFILLED" <% if (order.status === "FULFILLED"){%>selected <% } %>>Fulfilled</option>
+                <option value="CANCELED"<% if (order.status === "CANCELED"){%> selected <% } %>>Canceled</option>
               </select>
               <button data-orderid="<%= order.id%>" id="update-order-status-btn-<%= order.id%>" class="btn btn-secondary update-order-status-btn">Update</button>
             </div>

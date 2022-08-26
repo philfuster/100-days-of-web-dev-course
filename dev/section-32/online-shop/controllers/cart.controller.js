@@ -159,7 +159,7 @@ async function checkOut(req, res) {
 		throw "Invalid Order";
 	}
 
-	await order.save();
+	const { insertedId: orderId } = await order.save();
 
 	cartSession.setCartSessionData(
 		req,
@@ -167,7 +167,7 @@ async function checkOut(req, res) {
 			...cartSession.defaultCartData,
 		},
 		function () {
-			return res.redirect("/products");
+			return res.redirect(`/orders/${orderId}/success`);
 		}
 	);
 }

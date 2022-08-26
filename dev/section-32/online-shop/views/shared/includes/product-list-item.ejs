@@ -2,7 +2,8 @@
   <img src="<%= product.imagePath %>" alt="<%= product.alt %>" />
   <div class="product-list-item-detail">
     <h3><%= product.name %></h3>
-    <div class="product-list-item-actions">
+    <p class="summary"><%= product.summary %></p>
+    <div class="product-list-item-actions <% if(!locals.isAdmin) {%>center<% } %>">
       <% if (locals.isAdmin) { %>
         <form action="/admin/products/<%= product._id %>" method="GET">
           <button class="btn btn-secondary">View & Edit</button>

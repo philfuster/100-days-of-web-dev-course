@@ -9,4 +9,6 @@ router.use(guardRoute);
 
 router.get("/orders", makeSafe(orderController.getOrders));
 
+router.get("/orders/:id/success", makeSafe(orderController.getSingleOrder));
+
 module.exports = router;
