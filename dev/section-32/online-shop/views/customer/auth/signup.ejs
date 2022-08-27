@@ -1,12 +1,12 @@
-<%- include('../shared/includes/head.ejs', { title: 'Signup' }) %>
+<%- include('../includes/head.ejs', { title: 'Signup' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-  <%-include('../shared/includes/header.ejs') %>
+  <%-include('../includes/header.ejs') %>
   <main>
     <h1>Create New Account</h1>
-    <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
+    <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form id="auth-form" method="post" action="/signup" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
       <div class="form-control">
@@ -19,9 +19,9 @@
       </div>
       <div class="form-control">
         <label for="password">Password</label>
-      <input type="password" name="password" id="password" value="<%= inputData.password %>" required />
+        <input type="password" name="password" id="password" value="<%= inputData.password %>" minlength="6" required />
       </div>
-      <div class="separator"></div>
+      <hr />
       <div class="form-control">
         <label for="name">Full Name</label>
         <input type="text" name="name" id="name" value="<%= inputData.name %>" required />
@@ -32,11 +32,19 @@
       </div>
       <div class="form-control">
         <label for="postalCode">Postal Code</label>
-        <input type="text" name="postalCode" id="postalCode" value="<%= inputData.postalCode %>"required />
+        <input
+          type="text"
+          name="postalCode"
+          id="postalCode"
+          value="<%= inputData.postalCode %>"
+          minlength="5"
+          maxlength="5"
+          required
+        />
       </div>
       <div class="form-control">
         <label for="city">City</label>
-        <input type="text" name="city" id="city" value="<%= inputData.city %>"required />
+        <input type="text" name="city" id="city" value="<%= inputData.city %>" required />
       </div>
       <button class="btn btn-primary">Create Account</button>
       <div id="auth-alternative">

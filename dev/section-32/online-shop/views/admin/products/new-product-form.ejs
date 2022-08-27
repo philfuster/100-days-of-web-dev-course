@@ -1,14 +1,14 @@
-<%- include('../shared/includes/head.ejs', { title: 'Update Product' }) %>
+<%- include('../includes/head.ejs', { title: 'Update Product' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/admin/product-form.css">
 <script src="/scripts/product-form.js" defer></script>
 </head>
 <body>
-  <%-include('../shared/includes/header.ejs') %>
+  <%-include('../includes/header.ejs') %>
   <main>
-    <h1>Update Product</h1>
-    <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
-  <form action="/admin/products/<%= inputData.productId %>/?_csrf=<%= locals.csrfToken%>" method="POST" enctype="multipart/form-data">
+    <h1>Add New Product</h1>
+    <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
+    <form action="/admin/products/new/?_csrf=<%= locals.csrfToken%>" method="POST" enctype="multipart/form-data">
       <div id="product-item">
         <div class="form-control">
           <label for="title">Title</label>
@@ -16,10 +16,10 @@
         </div>
         <div class="form-control">
           <label for="image">Image</label>
-          <img id="image-preview" alt="Your picked image." src="<%= inputData.imagePath %>">
           <!-- Can't style the file input uniformly across browsers. Easier to hide it & use a button to trigger the file picker. -->
           <button id="file-upload-btn" class="btn btn-primary">Upload Photo</button>
-          <input type="file" name="image" id="image" accept="image/jpg, image/jpeg, image/png" style="display: none" />
+          <input type="file" name="image" id="image" value="<%= inputData.imagePath%>" required accept="image/jpg, image/jpeg, image/png" style="display: none" />
+          <img id="image-preview" alt="Your picked image." src="<%= inputData.imagePath%>">
         </div>
         <div class="form-control">
           <label for="summary">Summary</label>

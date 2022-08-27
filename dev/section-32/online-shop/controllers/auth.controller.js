@@ -16,7 +16,7 @@ function getSignup(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("auth/signup", {
+	res.render("customer/auth/signup", {
 		inputData: sessionErrorData,
 		cartData: sessionCartData,
 	});
@@ -31,7 +31,7 @@ function getLogin(req, res) {
 		...cartSession.defaultCartData,
 	});
 
-	res.render("auth/login", {
+	res.render("customer/auth/login", {
 		inputData: sessionErrorData,
 		cartData: sessionCartData,
 	});

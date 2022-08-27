@@ -6,7 +6,7 @@ const fsPromises = require("fs").promises;
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
-	return res.render("admin/products", { products });
+	return res.render("admin/products/products", { products });
 }
 
 async function getSingleProduct(req, res) {
@@ -34,7 +34,7 @@ async function getSingleProduct(req, res) {
 		productId,
 	};
 
-	return res.render("admin/product-form", {
+	return res.render("admin/products/product-form", {
 		product: existingProduct,
 		inputData,
 	});
@@ -189,7 +189,7 @@ function getNewProductForm(req, res) {
 		price: 0,
 		description: "",
 	});
-	return res.render("admin/new-product-form", {
+	return res.render("admin/products/new-product-form", {
 		inputData: sessionErrorData,
 	});
 }

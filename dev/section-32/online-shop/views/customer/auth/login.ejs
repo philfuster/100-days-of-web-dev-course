@@ -1,12 +1,12 @@
-<%- include('../shared/includes/head.ejs', { title: 'Login' }) %>
+<%- include('../includes/head.ejs', { title: 'Login' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-  <%-include('../shared/includes/header.ejs') %>
+  <%-include('../includes/header.ejs') %>
   <main>
     <h1>Login</h1>
-    <%-include("../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
+    <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
     <form id="auth-form" action="/login" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
       <div class="form-control">

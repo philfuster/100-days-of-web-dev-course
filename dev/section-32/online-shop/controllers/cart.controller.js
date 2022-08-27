@@ -29,7 +29,7 @@ async function getCart(req, res) {
 		totalPrice: currencyFormatter.format(sessionCartData.totalPrice),
 		quantity: sessionCartData.quantity,
 	};
-	res.render("customer/cart", {
+	res.render("customer/cart/cart", {
 		cartData,
 		csrfToken: req.csrfToken(),
 	});

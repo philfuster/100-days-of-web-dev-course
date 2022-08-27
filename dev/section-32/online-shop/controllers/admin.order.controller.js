@@ -30,7 +30,7 @@ async function getOrders(req, res) {
 		};
 		return displayOrder;
 	});
-	res.render("admin/orders", {
+	res.render("admin/orders/orders", {
 		orders,
 		csrfToken: req.csrfToken(),
 	});
