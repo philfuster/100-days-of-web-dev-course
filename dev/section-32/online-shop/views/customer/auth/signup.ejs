@@ -1,36 +1,36 @@
-<%- include('../includes/head.ejs', { title: 'Signup' }) %>
+<%- include('../../shared/includes/head.ejs', { title: 'Signup' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include('../../shared/includes/header.ejs') %>
   <main>
     <h1>Create New Account</h1>
     <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
-    <form id="auth-form" method="post" action="/signup" method="POST">
+    <form action="/signup" method="POST">
       <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
-      <div class="form-control">
+      <p>
         <label for="email">E-mail</label>
         <input type="email" name="email" id="email" value="<%= inputData.email %>" required />
-      </div>
-      <div class="form-control">
+      </p>
+      <p>
         <label for="confirmEmail">Confirm E-mail</label>
       <input type="email" name="confirmEmail" id="confirmEmail" value="<%= inputData.confirmEmail %>" required />
-      </div>
-      <div class="form-control">
+      </p>
+      <p>
         <label for="password">Password</label>
         <input type="password" name="password" id="password" value="<%= inputData.password %>" minlength="6" required />
-      </div>
+      </p>
       <hr />
-      <div class="form-control">
+      <p>
         <label for="name">Full Name</label>
         <input type="text" name="name" id="name" value="<%= inputData.name %>" required />
-      </div>
-      <div class="form-control">
+      </p>
+      <p>
         <label for="address">Street</label>
         <input type="text" name="address" id="address" value="<%= inputData.address %>" required />
-      </div>
-      <div class="form-control">
+      </p>
+      <p>
         <label for="postalCode">Postal Code</label>
         <input
           type="text"
@@ -41,15 +41,15 @@
           maxlength="5"
           required
         />
-      </div>
-      <div class="form-control">
+      </p>
+      <p>
         <label for="city">City</label>
         <input type="text" name="city" id="city" value="<%= inputData.city %>" required />
-      </div>
-      <button class="btn btn-primary">Create Account</button>
-      <div id="auth-alternative">
-        <a href="/login" class="btn btn-alt">Login instead</a>
-      </div>
+      </p>
+      <button class="btn">Create Account</button>
+      <p id="swith-form">
+        <a href="/login">Login instead</a>
+      </p>
     </form>
   </main>
 </body>

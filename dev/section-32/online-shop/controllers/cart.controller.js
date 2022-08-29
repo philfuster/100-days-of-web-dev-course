@@ -1,7 +1,7 @@
 const cartSession = require("../util/cart.session");
-const Order = require("../models/order");
-const Product = require("../models/product");
-const User = require("../models/User");
+const Order = require("../models/order.model");
+const Product = require("../models/product.model");
+const User = require("../models/user.model");
 const orderValidation = require("../util/order.validation");
 
 async function getCart(req, res) {
@@ -123,55 +123,6 @@ async function updateItemQuantity(req, res) {
 	});
 }
 
-async function checkOut(req, res) {
-	const cartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	const user = new User(
-		null,
-		null,
-		null,
-		null,
-		null,
-		null,
-		req.session.user.id
-	);
-	await user.fetch();
-	if (user.fullName == null || user.email == null) {
-		throw "Invalid User";
-	}
-	const order = new Order(
-		{
-			id: user.id,
-			fullName: user.fullName,
-			street: user.street,
-			postalCode: user.postalCode,
-			city: user.city,
-		},
-		new Date(),
-		cartData.items,
-		cartData.totalPrice,
-		cartData.quantity,
-		Order.validOrderStatuses.PENDING
-	);
-	const orderIsValid = await orderValidation.orderIsValid(order);
-	if (!orderIsValid) {
-		throw "Invalid Order";
-	}
-
-	const { insertedId: orderId } = await order.save();
-
-	cartSession.setCartSessionData(
-		req,
-		{
-			...cartSession.defaultCartData,
-		},
-		function () {
-			return res.redirect(`/orders/${orderId}/success`);
-		}
-	);
-}
-
 async function removeItemFromCart(req, res) {
 	const { productId } = req.body;
 	const cartData = cartSession.getCartSessionData(req, {
@@ -213,5 +164,4 @@ module.exports = {
 	addProductToCart,
 	updateItemQuantity,
 	removeItemFromCart,
-	checkOut,
 };

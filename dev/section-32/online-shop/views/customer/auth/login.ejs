@@ -1,27 +1,26 @@
-<%- include('../includes/head.ejs', { title: 'Login' }) %>
+<%- include('../../shared/includes/head.ejs', { title: 'Login' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include("../../shared/includes/header.ejs") %>
   <main>
     <h1>Login</h1>
     <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>
-    <form id="auth-form" action="/login" method="POST">
-      <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-      <div class="form-control">
+    <form action="/login" method="POST">
+      <input type="hidden" name="_csrf" value="<%= locals.csrfToken%>" />
+      <p>
         <label for="email">E-mail</label>
         <input type="email" name="email" id="email" value="<%= inputData.email %>" required />
-      </div>
-      <div class="form-control border-bottom">
+      </p>
+      <p>
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" value="<%= inputData.password %>" required />
-      </div>
-      <button class="btn btn-primary">Login</button>
-      <div id="auth-alternative">
-        <a href="/signup" class="btn btn-alt">Create an Account</a>
-      </div>
+        <input type="password" name="password" id="password" value="<%= inputData.password %>" minlength="6" required />
+      </p>
+      <button class="btn">Login</button>
+      <p id="swith-form">
+        <a href="/signup">Create a new user.</a>
+      </p>
     </form>
   </main>
 </body>
-</html>

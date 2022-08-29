@@ -1,24 +1,18 @@
-const path = require("path");
-const Product = require("../models/product");
-const validationSession = require("../util/validation.session");
+const Product = require("../models/product.model");
+const sessionFlash = require("../util/session-flash");
 const productValidation = require("../util/product.validation");
-const fsPromises = require("fs").promises;
 
 async function getProducts(req, res) {
 	const products = await Product.fetchAll();
-	return res.render("admin/products/products", { products });
+	return res.render("admin/products/all-products", { products });
 }
 
-async function getSingleProduct(req, res) {
+async function getUpdateProduct(req, res) {
 	const { id: productId } = req.params;
-	const existingProduct = new Product(null, null, null, null, null, productId);
-	await existingProduct.fetch();
-	if (existingProduct.name == null || existingProduct.price == null) {
-		throw "Invalid Product";
-	}
-	const sessionErrorData = validationSession.getSessionErrorData(req, {
-		name: "",
-		imagePath: "",
+	const existingProduct = await Product.findById(productId);
+	const sessionErrorData = sessionFlash.getSessionData(req, {
+		title: "",
+		imageUrl: "",
 		summary: "",
 		price: 0,
 		description: "",
@@ -26,119 +20,93 @@ async function getSingleProduct(req, res) {
 	const inputData = {
 		hasError: sessionErrorData.hasError,
 		message: sessionErrorData.message,
-		name: sessionErrorData.name || existingProduct.name,
-		imagePath: sessionErrorData.imagePath || existingProduct.imagePath,
+		title: sessionErrorData.title || existingProduct.title,
+		imageUrl: sessionErrorData.imageUrl || existingProduct.imageUrl,
 		summary: sessionErrorData.summary || existingProduct.summary,
 		description: sessionErrorData.description || existingProduct.description,
 		price: sessionErrorData.price || existingProduct.price,
-		productId,
+		id: productId,
 	};
 
-	return res.render("admin/products/product-form", {
-		product: existingProduct,
+	return res.render("admin/products/update-product", {
 		inputData,
 	});
 }
 
 async function createProduct(req, res) {
 	const { file: uploadedImageFile } = req;
-	const {
-		title: enteredName,
-		summary: enteredSummary,
-		price: enteredPrice,
-		description: enteredDescription,
-	} = req.body;
-	const product = new Product(
-		enteredName,
-		enteredSummary,
-		enteredPrice,
-		`/${uploadedImageFile.path.replace(/\\/g, "/")}`,
-		enteredDescription,
-		null
-	);
+	const product = new Product({
+		...req.body,
+		image: uploadedImageFile.filename,
+	});
 	const productIsValid = productValidation.productIsValid(product);
 	if (!productIsValid) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				hasError: true,
 				message: `Invalid Product.`,
-				name: enteredName,
-				summary: enteredSummary,
-				description: enteredDescription,
-				imagePath: uploadedImageFile.path,
-				price: enteredPrice,
+				title: product.title,
+				summary: product.summary,
+				description: product.description,
+				price: product.price,
 			},
 			function () {
-				res.redirect(`/admin/products`);
+				res.redirect(`/admin/products/new`);
 			}
 		);
 		return;
 	}
-	const existingProduct = product.getProductWithSameName();
+	const existingProduct = await product.getProductWithSameTitle();
 	if (existingProduct.id != null) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				hasError: true,
 				message: `Invalid Product. Product Title already exists.`,
-				name: enteredName,
-				summary: enteredSummary,
-				description: enteredDescription,
-				price: enteredPrice,
-				description: enteredDescription,
+				title: product.title,
+				summary: product.summary,
+				description: product.description,
+				price: product.price,
 			},
 			function () {
-				res.redirect(`/admin/products/`);
+				res.redirect(`/admin/products/new`);
 			}
 		);
 		return;
 	}
 
-	await product.create();
+	await product.save();
 
 	return res.redirect(`/admin/products`);
 }
 
-async function saveProduct(req, res) {
+async function updateProduct(req, res) {
 	const { id: productId } = req.params;
 	const { file: uploadedImageFile } = req;
-	const {
-		title: enteredName,
-		summary: enteredSummary,
-		price: enteredPrice,
-		description: enteredDescription,
-	} = req.body;
-	const enteredProduct = new Product(
-		enteredName,
-		enteredSummary,
-		enteredPrice,
-		// imagePath logic below.
-		null,
-		enteredDescription,
-		productId
-	);
-	const existingProduct = new Product(null, null, null, null, null, productId);
-	await existingProduct.fetch();
-	if (existingProduct.name == null || existingProduct.price == null) {
-		throw "Invalid product..";
+	const product = new Product({
+		...req.body,
+		_id: productId,
+	});
+	if (uploadedImageFile) {
+		product.replaceImage(uploadedImageFile.filename);
 	}
-	if (enteredProduct.name !== existingProduct.name) {
-		// product name change. Make sure no other product exists
-		// with that name already..
-		const productExistsWithEnteredName = await enteredProduct.existsAlready();
-		if (productExistsWithEnteredName) {
-			validationSession.flashErrorsToSession(
+	const existingProduct = await Product.findById(productId);
+	if (product.title !== existingProduct.title) {
+		// product title change. Make sure no other product exists
+		// with that title already..
+		const productExistsWithEnteredTitle = await product.existsAlready();
+		if (productExistsWithEnteredTitle) {
+			sessionFlash.flashDataToSession(
 				req,
 				{
 					hasError: true,
-					message: `Invalid product name, "${enteredProduct.name}" entered. Another product exists with it already.`,
-					name: existingProduct.name,
-					summary: enteredSummary,
-					description: enteredDescription,
-					price: enteredPrice,
-					// restore on-file image path. Resetting the flow, allowing user to change to a new pic if they want.
-					imagePath: existingProduct.imagePath,
+					message: `Invalid product title, "${product.title}" entered. Another product exists with it already.`,
+					title: existingProduct.title,
+					summary: product.summary,
+					description: product.description,
+					price: product.price,
+					imageUrl: existingProduct.imageUrl,
 				},
 				function () {
 					res.redirect(`/admin/products/${productId}`);
@@ -147,23 +115,18 @@ async function saveProduct(req, res) {
 			return;
 		}
 	}
-	if (uploadedImageFile && uploadedImageFile.path.length > 0) {
-		enteredProduct.imagePath = `/${uploadedImageFile.path.replace(/\\/g, "/")}`;
-	} else {
-		enteredProduct.imagePath = existingProduct.imagePath;
-	}
-	const productIsValid = productValidation.productIsValid(enteredProduct);
+	const productIsValid = productValidation.productIsValid(product);
 	if (!productIsValid) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				hasError: true,
 				message: `Invalid Product.`,
-				name: enteredName,
-				summary: enteredSummary,
-				description: enteredDescription,
-				imagePath: enteredProduct.imagePath,
-				price: enteredPrice,
+				title: product.title,
+				summary: product.summary,
+				description: product.description,
+				imageUrl: existingProduct.imageUrl,
+				price: product.price,
 			},
 			function () {
 				res.redirect(`/admin/products/${productId}`);
@@ -171,25 +134,21 @@ async function saveProduct(req, res) {
 		);
 		return;
 	}
-	if (!existingProduct.equals(enteredProduct)) {
-		await enteredProduct.update();
-		if (enteredProduct.imagePath !== existingProduct.imagePath) {
-			await fsPromises.unlink(path.join(__basedir, existingProduct.imagePath));
-		}
+	if (!existingProduct.equals(product)) {
+		await product.save();
 	}
 
 	return res.redirect(`/admin/products`);
 }
 
 function getNewProductForm(req, res) {
-	const sessionErrorData = validationSession.getSessionErrorData(req, {
-		name: "",
-		imagePath: "",
+	const sessionErrorData = sessionFlash.getSessionData(req, {
+		title: "",
 		summary: "",
 		price: 0,
 		description: "",
 	});
-	return res.render("admin/products/new-product-form", {
+	return res.render("admin/products/new-product", {
 		inputData: sessionErrorData,
 	});
 }
@@ -197,20 +156,16 @@ function getNewProductForm(req, res) {
 async function deleteProduct(req, res) {
 	const { id: productId } = req.params;
 	// to consider: delete requirements: should not be on an open order.
-	const existingProduct = new Product(null, null, null, null, null, productId);
-	await existingProduct.fetch();
-	const result = await existingProduct.delete();
-	if (result.acknowledged && result.deletedCount === 1) {
-		await fsPromises.unlink(path.join(__basedir, existingProduct.imagePath));
-	}
-	res.redirect("/admin/products");
+	const product = await Product.findById(productId);
+	await product.remove();
+	res.json({ message: "Deleted Product" });
 }
 
 module.exports = {
-	getSingleProduct,
+	getUpdateProduct: getUpdateProduct,
 	getProducts,
 	createProduct,
 	getNewProductForm,
-	saveProduct,
+	updateProduct,
 	deleteProduct,
 };

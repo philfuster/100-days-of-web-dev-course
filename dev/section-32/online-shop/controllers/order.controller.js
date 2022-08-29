@@ -1,4 +1,4 @@
-const Order = require("../models/order");
+const Order = require("../models/order.model");
 const cartSession = require("../util/cart.session");
 
 async function getOrders(req, res) {
@@ -75,7 +75,57 @@ async function getSingleOrder(req, res) {
 	});
 }
 
+async function checkOut(req, res) {
+	const cartData = cartSession.getCartSessionData(req, {
+		...cartSession.defaultCartData,
+	});
+	const user = new User(
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+		req.session.user.id
+	);
+	await user.fetch();
+	if (user.fullName == null || user.email == null) {
+		throw "Invalid User";
+	}
+	const order = new Order(
+		{
+			id: user.id,
+			fullName: user.fullName,
+			street: user.street,
+			postalCode: user.postalCode,
+			city: user.city,
+		},
+		new Date(),
+		cartData.items,
+		cartData.totalPrice,
+		cartData.quantity,
+		Order.validOrderStatuses.PENDING
+	);
+	const orderIsValid = await orderValidation.orderIsValid(order);
+	if (!orderIsValid) {
+		throw "Invalid Order";
+	}
+
+	const { insertedId: orderId } = await order.save();
+
+	cartSession.setCartSessionData(
+		req,
+		{
+			...cartSession.defaultCartData,
+		},
+		function () {
+			return res.redirect(`/orders/${orderId}/success`);
+		}
+	);
+}
+
 module.exports = {
 	getOrders,
 	getSingleOrder,
+	checkOut,
 };

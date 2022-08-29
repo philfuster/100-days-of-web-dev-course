@@ -1,11 +1,11 @@
-const Product = require("../models/product");
+const Product = require("../models/product.model");
 
 async function productIsValid(product) {
 	return (
-		product.name &&
+		product.title &&
 		product.summary &&
 		product.description &&
-		product.imagePath &&
+		product.image &&
 		product.price &&
 		product.price > 0
 	);

@@ -3,7 +3,40 @@
 }
 
 html {
-	--color-grey-300: rgb(114, 114, 114);
+	--color-gray-50: rgb(243, 236, 230);
+	--color-gray-100: rgb(207, 201, 195);
+	--color-gray-300: rgb(99, 92, 86);
+	--color-gray-400: rgb(70, 65, 60);
+	--color-gray-500: rgb(37, 34, 31);
+	--color-gray-600: rgb(32, 29, 26);
+	--color-gray-700: rgb(31, 26, 22);
+
+	--color-primary-50: rgb(253, 224, 200);
+	--color-primary-100: rgb(253, 214, 183);
+	--color-primary-200: rgb(250, 191, 143);
+	--color-primary-400: rgb(223, 159, 41);
+	--color-primary-500: rgb(212, 136, 14);
+	--color-primary-700: rgb(212, 120, 14);
+	--color-primary-200-contrast: rgb(100, 46, 2);
+	--color-primary-500-contrast: white;
+
+	--color-error-100: rgb(255, 192, 180);
+	--color-error-500: rgb(199, 51, 15);
+
+	--color-primary-500-bg: rgb(63, 60, 58);
+
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-4: 1rem;
+	--space-6: 1.5rem;
+	--space-8: 2rem;
+
+	--border-radius-small: 4px;
+	--border-radius-medium: 6px;
+
+	--shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+	/* --color-grey-300: rgb(114, 114, 114);
 	--color-grey-400: rgb(73, 73, 73);
 	--color-grey-500: rgb(33, 33, 33);
 	--color-grey-700: rgb(24, 24, 24);
@@ -16,29 +49,25 @@ html {
 	--color-secondary-400: rgb(202, 127, 41);
 	--color-secondary-600: rgb(173, 92, 0);
 
-	background-color: var(--color-grey-500);
+	background-color: var(--color-grey-500); */
 	font-family: "Montserrat", sans-serif;
 }
 
 body {
-	margin: 0 auto;
-	max-width: 50rem;
+	background-color: var(--color-gray-500);
+	color: var(--color-gray-100);
+	margin: 0;
 }
 
 main {
-	margin: 1rem auto;
 	width: 90%;
-	text-align: left;
+	max-width: 50rem;
+	margin: 0 auto;
 	color: white;
 }
 
-h1,
-h2 {
-	margin: 1rem 0;
-}
-
 ul,
-li {
+ol {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -46,95 +75,49 @@ li {
 
 a {
 	text-decoration: none;
-	color: var(--color-secondary-400);
-}
-
-a:hover,
-a:active {
-	background-color: rgba(150, 132, 132, 0.5);
-}
-
-#main-header {
-	height: 4rem;
-	display: flex;
-	align-items: center;
-	border-bottom: 1px solid var(--color-secondary-400);
-}
-
-#main-header nav {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-}
-
-#main-header ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-#main-header li {
-	margin: 0 1rem;
-}
-
-#logo {
-	font-weight: bold;
-	font-size: 1.75rem;
-}
-
-#main-header a,
-#main-header button {
-	text-decoration: none;
-	color: var(--color-primary-500);
-	padding: 0.25rem 0.75rem;
-	border-radius: 3px;
-}
-
-#main-header a:hover,
-#main-header a:active,
-#main-header button:hover,
-#main-header button:active {
-	background-color: rgba(150, 132, 132, 0.5);
+	color: var(--color-primary-400);
 }
 
 .btn {
+	cursor: pointer;
 	font: inherit;
 	text-decoration: none;
-	cursor: pointer;
-	border-radius: 4px;
-	padding: 0.5rem 1.5rem;
-}
-
-.btn-primary {
-	background-color: var(--color-secondary-400);
-	border: 1px solid var(--color-secondary-400);
-	color: white;
-}
-
-.btn-secondary {
-	background-color: transparent;
+	padding: var(--space-2) var(--space-6);
+	background-color: var(--color-primary-500);
+	color: var(--color-primary-500-contrast);
 	border: 1px solid var(--color-primary-500);
-	color: var(--color-secondary-400);
+	border-radius: var(--border-radius-small);
 }
 
-.btn-primary:hover,
-.btn-primary:active {
-	background-color: var(--color-secondary-600);
-	border-color: var(--color-secondary-600);
+.btn:hover,
+.btn:active {
+	background-color: var(--color-primary-700);
+	border-color: var(--color-primary-700);
 }
 
-.btn-primary.btn-alt {
+.btn-alt {
 	background-color: transparent;
-	border: none;
-	color: rgb(255, 205, 147);
+	color: var(--color-primary-500);
 }
 
-#cart-quantity {
-	color: white;
-	padding: 0 0.75rem;
-	border-radius: 16px;
-	background-color: var(--color-secondary-400);
+.btn-alt:hover,
+.btn-alt:active {
+	background-color: var(--color-primary-500-bg);
+}
+
+.alert {
+	border-radius: var(--border-radius-small);
+	background-color: var(--color-error-100);
+	color: var(--color-error-500);
+	padding: var(--space-4);
+}
+
+.alert h2 {
+	font-size: 1rem;
+	margin: var(--space-2) 0;
+	text-transform: uppercase;
+}
+
+.alert p {
+	margin: var(--space-2) 0;
 }

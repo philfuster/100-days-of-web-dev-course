@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+const Product = require("../models/product.model");
 const cartSession = require("../util/cart.session");
 
 async function getProducts(req, res) {
@@ -6,18 +6,16 @@ async function getProducts(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("customer/products/products", { products, cartData: sessionCartData });
+	res.render("customer/products/products", {
+		products,
+		cartData: sessionCartData,
+	});
 }
 
 async function getSingleProduct(req, res) {
 	const { id } = req.params;
-	const product = new Product(null, null, null, null, null, id);
 
-	await product.fetch();
-
-	if (!product.name) {
-		return res.redirect("404");
-	}
+	const product = await Product.findById();
 
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,

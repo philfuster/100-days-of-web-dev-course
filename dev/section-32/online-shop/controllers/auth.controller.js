@@ -1,10 +1,11 @@
-const User = require("../models/user");
-const validation = require("../util/validation");
-const validationSession = require("../util/validation.session");
+const User = require("../models/user.model");
+const userSession = require("../util/user.session");
+const validation = require("../util/signupValidation");
+const sessionFlash = require("../util/session-flash");
 const cartSession = require("../util/cart.session");
 
 function getSignup(req, res) {
-	const sessionErrorData = validationSession.getSessionErrorData(req, {
+	const sessionData = sessionFlash.getSessionData(req, {
 		email: "",
 		confirmEmail: "",
 		password: "",
@@ -17,13 +18,13 @@ function getSignup(req, res) {
 		...cartSession.defaultCartData,
 	});
 	res.render("customer/auth/signup", {
-		inputData: sessionErrorData,
+		inputData: sessionData,
 		cartData: sessionCartData,
 	});
 }
 
 function getLogin(req, res) {
-	const sessionErrorData = validationSession.getSessionErrorData(req, {
+	const sessionData = sessionFlash.getSessionData(req, {
 		email: "",
 		password: "",
 	});
@@ -32,7 +33,7 @@ function getLogin(req, res) {
 	});
 
 	res.render("customer/auth/login", {
-		inputData: sessionErrorData,
+		inputData: sessionData,
 		cartData: sessionCartData,
 	});
 }
@@ -41,7 +42,7 @@ async function signup(req, res) {
 	const { email, confirmEmail, password, name, address, postalCode, city } =
 		req.body;
 	if (
-		!validation.userCredentialsAreValid(
+		!validation.userDetailsAreValid(
 			email,
 			confirmEmail,
 			password,
@@ -49,9 +50,10 @@ async function signup(req, res) {
 			address,
 			postalCode,
 			city
-		)
+		) ||
+		!validation.emailIsConfirmed(email, confirmEmail)
 	) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				message:
@@ -75,10 +77,10 @@ async function signup(req, res) {
 
 	const existsAlready = await user.existsAlready();
 	if (existsAlready) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
-				message: "User exists already!",
+				message: "User exists already! Try logging in instead.",
 				email,
 				confirmEmail,
 				password,
@@ -93,7 +95,6 @@ async function signup(req, res) {
 		);
 		return;
 	}
-
 	await user.save();
 	res.redirect("/login");
 }
@@ -104,7 +105,7 @@ async function login(req, res) {
 	const user = new User(enteredEmail, enteredPassword);
 	const existingUser = await user.getUserWithSameEmail();
 	if (!existingUser) {
-		validationSession.flashErrorsToSession(
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				message: "Could not log you in - please check your credentials!",
@@ -117,9 +118,11 @@ async function login(req, res) {
 		);
 		return;
 	}
-	const success = await user.login(existingUser.password);
-	if (!success) {
-		validationSession.flashErrorsToSession(
+	const passwordIsCorrect = await user.hasMatchingPassword(
+		existingUser.password
+	);
+	if (!passwordIsCorrect) {
+		sessionFlash.flashDataToSession(
 			req,
 			{
 				message: "Could not log you in - please check your credentials!",
@@ -132,27 +135,14 @@ async function login(req, res) {
 		);
 		return;
 	}
-
-	req.session.user = {
-		id: existingUser._id,
-		email: existingUser.email,
-	};
-
-	req.session.isAuthenticated = true;
-	req.session.isAdmin = existingUser.isAdmin;
-	req.session.save(function () {
-		if (existingUser.isAdmin) {
-			res.redirect("/admin/products");
-		} else {
-			res.redirect("/products");
-		}
+	userSession.createUserSession(req, existingUser, function () {
+		res.redirect("/products");
 	});
+	return;
 }
 
 function logout(req, res) {
-	req.session.user = null;
-	req.session.isAuthenticated = false;
-	req.session.isAdmin = false;
+	userSession.destroyUserAuthSession(req);
 	res.redirect("/");
 }
 

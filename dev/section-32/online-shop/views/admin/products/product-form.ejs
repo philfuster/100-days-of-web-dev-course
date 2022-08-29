@@ -1,10 +1,10 @@
-<%- include('../includes/head.ejs', { title: 'Update Product' }) %>
+<%- include('../../shared/includes/head.ejs', { title: 'Update Product' }) %>
 <link rel="stylesheet" href="/styles/forms.css">
 <link rel="stylesheet" href="/styles/admin/product-form.css">
 <script src="/scripts/product-form.js" defer></script>
 </head>
 <body>
-  <%-include('../includes/header.ejs') %>
+  <%-include('../../shared/includes/header.ejs') %>
   <main>
     <h1>Update Product</h1>
     <%-include("../../shared/includes/input-error.ejs", { hasError: inputData.hasError, message: inputData.message }) %>

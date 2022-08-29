@@ -1,4 +1,4 @@
-const Order = require("../models/order");
+const Order = require("../models/order.model");
 
 async function getOrders(req, res) {
 	const result = await Order.fetchAll();

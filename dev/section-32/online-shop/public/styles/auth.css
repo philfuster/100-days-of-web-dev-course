@@ -1,15 +1,22 @@
-main {
+h1 {
+	text-align: center;
+	color: var(--color-gray-300);
+}
+
+form {
+	max-width: 25rem;
+	margin: var(--space-8) auto;
+	background-color: var(--color-gray-700);
+	padding: var(--space-4);
+	border-radius: var(--border-radius-medium);
 	text-align: center;
 }
 
-#auth-form {
-	max-width: 20rem;
-	margin: 0 auto;
-	background-color: var(--color-grey-700);
-	padding: 1.5rem;
-	border-radius: 3px;
+form a {
+	color: var(--color-primary-200);
 }
 
-#auth-alternative {
-	margin-top: 1rem;
+form a:hover,
+form a:active {
+	color: var(--color-primary-400);
 }
