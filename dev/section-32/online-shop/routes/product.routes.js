@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/products", productController.getProducts);
 
-router.get("/products/:id", makeSafe(productController.getSingleProduct));
+router.get("/products/:id", makeSafe(productController.getProductDetails));
 
 router.post("/products/:id", makeSafe(productController.addProductToCart));
 

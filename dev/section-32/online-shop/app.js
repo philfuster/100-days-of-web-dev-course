@@ -5,6 +5,7 @@ const csurf = require("csurf");
 const sessionConfig = require("./config/session");
 const checkAuthStatusMiddleware = require("./middlewares/check-auth");
 const addCSRFTokenMiddleware = require("./middlewares/csrf-token");
+const cartMiddleware = require('./middlewares/cart');
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const db = require("./data/database");
 const protectRoutes = require("./middlewares/protect-routes");
@@ -29,6 +30,8 @@ app.use(express.json());
 
 app.use(sessionConfig.createSessionStore());
 app.use(csurf());
+
+app.use(cartMiddleware);
 
 app.use(addCSRFTokenMiddleware);
 app.use(checkAuthStatusMiddleware);

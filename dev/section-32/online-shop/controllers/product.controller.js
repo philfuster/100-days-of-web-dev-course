@@ -6,16 +6,16 @@ async function getProducts(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
-	res.render("customer/products/products", {
+	res.render("customer/products/all-products", {
 		products,
 		cartData: sessionCartData,
 	});
 }
 
-async function getSingleProduct(req, res) {
+async function getProductDetails(req, res) {
 	const { id } = req.params;
 
-	const product = await Product.findById();
+	const product = await Product.findById(id);
 
 	const sessionCartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
@@ -26,14 +26,13 @@ async function getSingleProduct(req, res) {
 		style: "currency",
 	}).format(product.price);
 
-	res.render("customer/products/single-product", {
+	res.render("customer/products/product-details", {
 		product,
-		csrfToken: req.csrfToken(),
 		cartData: sessionCartData,
 	});
 }
 
 module.exports = {
 	getProducts,
-	getSingleProduct,
+	getProductDetails: getProductDetails,
 };

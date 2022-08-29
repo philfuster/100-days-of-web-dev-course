@@ -1,8 +1,5 @@
 const cartSession = require("../util/cart.session");
-const Order = require("../models/order.model");
 const Product = require("../models/product.model");
-const User = require("../models/user.model");
-const orderValidation = require("../util/order.validation");
 
 async function getCart(req, res) {
 	const sessionCartData = cartSession.getCartSessionData(req, {
@@ -35,8 +32,12 @@ async function getCart(req, res) {
 	});
 }
 
-async function addProductToCart(req, res) {
+async function addCartItem(req, res) {
 	const { productId } = req.body;
+
+	const product = await Product.findById(productId);
+
+	res.locals.cart.addItem();
 	const cartData = cartSession.getCartSessionData(req, {
 		...cartSession.defaultCartData,
 	});
@@ -161,7 +162,7 @@ async function removeItemFromCart(req, res) {
 
 module.exports = {
 	getCart,
-	addProductToCart,
+	addCartItem: addCartItem,
 	updateItemQuantity,
 	removeItemFromCart,
 };
