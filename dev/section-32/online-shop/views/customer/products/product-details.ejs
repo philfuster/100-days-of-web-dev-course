@@ -1,7 +1,6 @@
 <%- include('../../shared/includes/head.ejs', { title: 'Welcome' }) %>
 <link rel="stylesheet" href="/styles/products.css">
-<script src="/scripts/single-product.js" defer></script>
-<meta name="csrf-token", content="<%= csrfToken%>">
+<script src="/scripts/cart-management.js" defer></script>
 </head>
 <body>
   <%-include('../../shared/includes/header.ejs') %>
@@ -9,9 +8,9 @@
     <header>
       <img src="<%= product.imageUrl%>" alt="<%= product.title %>" />
       <div id="product-info">
-        <h1 data-productid="<%= product.id %>"><%= product.title%></h1>
-        <p class="product-price"><%= product.formattedPrice%></p>
-        <button id="add-to-cart-btn" class="btn">Add to Cart</button>
+        <h1><%= product.title%></h1>
+        <p><%= product.formattedPrice%></p>
+        <button data-csrf="<%= locals.csrfToken%>" data-productid="<%= product.id %>" class="btn">Add to Cart</button>
       </div>
     </header>
     <p id="product-description"><%= product.description %></p>

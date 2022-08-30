@@ -2,34 +2,7 @@ const cartSession = require("../util/cart.session");
 const Product = require("../models/product.model");
 
 async function getCart(req, res) {
-	const sessionCartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-
-	const currencyFormatter = new Intl.NumberFormat("en-US", {
-		currency: "USD",
-		style: "currency",
-	});
-
-	const items = sessionCartData.items.map((item) => {
-		const displayItem = {
-			id: item.id,
-			name: item.name,
-			quantity: item.quantity,
-			formattedPrice: currencyFormatter.format(item.price),
-			formattedTotalPrice: currencyFormatter.format(item.totalPrice),
-		};
-		return displayItem;
-	});
-	const cartData = {
-		items,
-		totalPrice: currencyFormatter.format(sessionCartData.totalPrice),
-		quantity: sessionCartData.quantity,
-	};
-	res.render("customer/cart/cart", {
-		cartData,
-		csrfToken: req.csrfToken(),
-	});
+	res.render("customer/cart/cart");
 }
 
 async function addCartItem(req, res) {
@@ -37,132 +10,35 @@ async function addCartItem(req, res) {
 
 	const product = await Product.findById(productId);
 
-	res.locals.cart.addItem();
-	const cartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-
-	let itemUpdated = false;
-	cartData.items.forEach((item) => {
-		if (!item.id.equals(productId)) return;
-		item.quantity += 1;
-		item.totalPrice += item.price;
-		cartData.totalPrice += item.price;
-		itemUpdated = true;
-	});
-	if (!itemUpdated) {
-		const existingProduct = new Product(
-			null,
-			null,
-			null,
-			null,
-			null,
-			productId
-		);
-		await existingProduct.fetch();
-		if (existingProduct.name == null) {
-			return res.json({ hasError: true, message: "Product not found." });
-		}
-		cartData.items.push({
-			id: existingProduct.id,
-			name: existingProduct.name,
-			price: existingProduct.price,
-			totalPrice: existingProduct.price,
-			quantity: 1,
-		});
-		cartData.totalPrice += existingProduct.price;
-	}
-	cartData.quantity = cartData.items.reduce((accumulator, item) => {
-		return (accumulator += item.quantity);
-	}, 0);
-	cartSession.setCartSessionData(req, cartData, function () {
-		res.json({ hasError: false, cartTotalQuantity: cartData.quantity });
+	const cart = res.locals.cart;
+	cart.addItem(product);
+	req.session.cart = cart;
+	res.status(201).json({
+		message: "Cart updated!",
+		newTotalItems: cart.totalQuantity,
 	});
 }
 
-async function updateItemQuantity(req, res) {
-	const { productid, quantity: enteredQuantity } = req.body;
-	const currencyFormatter = new Intl.NumberFormat("en-US", {
-		currency: "USD",
-		style: "currency",
-	});
-	const cartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	let itemUpdated = false;
-	let lineTotalPrice = 0;
-	cartData.items.forEach((item) => {
-		if (!item.id.equals(productid)) return;
-		item.quantity = parseInt(enteredQuantity);
-		lineTotalPrice = item.price * enteredQuantity;
-		item.totalPrice = lineTotalPrice;
-		itemUpdated = true;
-	});
-	if (!itemUpdated) {
-		return res.json({ hasError: true, message: "invalid product." });
-	}
-	const { totalPrice, totalQuantity } = cartData.items.reduce(
-		(accumulator, item) => {
-			accumulator.totalPrice += item.totalPrice;
-			accumulator.totalQuantity += item.quantity;
-			return accumulator;
-		},
-		{
-			totalPrice: 0,
-			totalQuantity: 0,
-		}
-	);
-	cartData.totalPrice = totalPrice;
-	cartData.quantity = totalQuantity;
-	cartSession.setCartSessionData(req, cartData, function () {
-		res.json({
-			hasError: false,
-			cartTotalPrice: currencyFormatter.format(cartData.totalPrice),
-			totalQuantity: totalQuantity,
-			lineTotalPrice: currencyFormatter.format(lineTotalPrice),
-		});
-	});
-}
+async function updateCartItem(req, res) {
+	const { productId, quantity } = req.body;
+	const cart = res.locals.cart;
 
-async function removeItemFromCart(req, res) {
-	const { productId } = req.body;
-	const cartData = cartSession.getCartSessionData(req, {
-		...cartSession.defaultCartData,
-	});
-	const currencyFormatter = new Intl.NumberFormat("en-US", {
-		currency: "USD",
-		style: "currency",
-	});
-	let itemRemoved = false;
-	cartData.items = cartData.items.filter((item) => {
-		if (item.id.equals(productId)) itemRemoved = true;
-		return !item.id.equals(productId);
-	});
-	if (!itemRemoved)
-		return res.json({ hasError: true, message: "invalid product" });
-	const { totalPrice, totalQuantity } = cartData.items.reduce(
-		(accumulator, item) => {
-			accumulator.totalPrice += item.totalPrice;
-			accumulator.totalQuantity += item.quantity;
-			return accumulator;
+	const updatedItemData = cart.updateItem(productId, +quantity);
+
+	req.session.cart = cart;
+
+	res.json({
+		message: "Item updated!",
+		updatedCartData: {
+			newTotalQuantity: cart.totalQuantity,
+			newTotalPrice: cart.totalPrice,
+			updatedItemPrice: updatedItemData.updatedItemPrice,
 		},
-		{
-			totalPrice: 0,
-			totalQuantity: 0,
-		}
-	);
-	cartData.totalPrice = totalPrice;
-	cartData.quantity = totalQuantity;
-	return res.json({
-		hasError: false,
-		cartTotalPrice: currencyFormatter.format(totalPrice),
-		totalQuantity,
 	});
 }
 
 module.exports = {
 	getCart,
 	addCartItem: addCartItem,
-	updateItemQuantity,
-	removeItemFromCart,
+	updateCartItem: updateCartItem,
 };

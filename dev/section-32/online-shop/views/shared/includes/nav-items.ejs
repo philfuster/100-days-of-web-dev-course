@@ -5,7 +5,7 @@
   </li>
   <li>
     <a href="/cart"
-      >Cart <span id="cart-quantity"><%= cartData.quantity %></span></a
+      >Cart <span class="badge"><%= locals.cart.totalQuantity %></span></a
     >
   </li>
   <% } %> <% if (locals.isAuth && !locals.isAdmin) { %>

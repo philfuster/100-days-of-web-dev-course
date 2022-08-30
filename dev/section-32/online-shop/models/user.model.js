@@ -16,19 +16,13 @@ class User {
 		this.isAdmin = false;
 	}
 
-	async fetch() {
-		const existingUser = await db
+	static findById(userId) {
+		const uid = new mongodb.ObjectId(userId);
+
+		return db
 			.getDb()
 			.collection("users")
-			.findOne({ _id: this.id });
-		if (existingUser == null) return null;
-		this.email = existingUser.email;
-		this.name = existingUser.name;
-		this.address = {
-			...existingUser.address,
-		};
-		this.password = existingUser.password;
-		this.isAdmin = existingUser.isAdmin;
+			.findOne({ _id: uid }, { projection: { password: 0 } });
 	}
 
 	getUserWithSameEmail() {

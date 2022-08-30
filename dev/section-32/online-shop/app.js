@@ -5,14 +5,16 @@ const csurf = require("csurf");
 const sessionConfig = require("./config/session");
 const checkAuthStatusMiddleware = require("./middlewares/check-auth");
 const addCSRFTokenMiddleware = require("./middlewares/csrf-token");
-const cartMiddleware = require('./middlewares/cart');
+const cartMiddleware = require("./middlewares/cart");
+const updateCartPricesMiddleware = require("./middlewares/update-cart-prices");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
+const notFoundMiddleware = require("./middlewares/not-found");
 const db = require("./data/database");
-const protectRoutes = require("./middlewares/protect-routes");
+const protectRoutesMiddleware = require("./middlewares/protect-routes");
 const baseRoutes = require("./routes/base.routes");
 const authRoutes = require("./routes/auth.routes");
 const cartRoutes = require("./routes/cart.routes");
-const orderRoutes = require("./routes/order.routes");
+const ordersRoutes = require("./routes/orders.routes");
 const productRoutes = require("./routes/product.routes");
 const adminRoutes = require("./routes/admin/admin.routes");
 
@@ -32,6 +34,7 @@ app.use(sessionConfig.createSessionStore());
 app.use(csurf());
 
 app.use(cartMiddleware);
+app.use(updateCartPricesMiddleware);
 
 app.use(addCSRFTokenMiddleware);
 app.use(checkAuthStatusMiddleware);
@@ -39,11 +42,12 @@ app.use(checkAuthStatusMiddleware);
 app.use(baseRoutes);
 app.use(authRoutes);
 app.use(productRoutes);
-app.use(cartRoutes);
+app.use("/cart", cartRoutes);
+app.use("/orders", protectRoutesMiddleware, ordersRoutes);
+app.use("/admin", protectRoutesMiddleware, adminRoutes);
+
+app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
-app.use(protectRoutes);
-app.use(orderRoutes);
-app.use("/admin", adminRoutes);
 
 db.connectToDatabase()
 	.then(function () {

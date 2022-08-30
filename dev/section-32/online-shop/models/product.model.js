@@ -5,15 +5,14 @@ const { ObjectId } = mongodb;
 
 class Product {
 	constructor(productData) {
-		const { title, summary, price, image, description, _id } = productData;
-		this.title = title;
-		this.summary = summary;
-		this.price = parseFloat(Number(price).toFixed(2));
-		this.image = image;
+		this.title = productData.title;
+		this.summary = productData.summary;
+		this.price = parseFloat(Number(productData.price).toFixed(2));
+		this.image = productData.image;
 		this.updateImageData();
-		this.description = description;
-		if (_id) {
-			this.id = _id.toString();
+		this.description = productData.description;
+		if (productData._id) {
+			this.id = productData._id.toString();
 		}
 	}
 
@@ -45,6 +44,21 @@ class Product {
 		return new Product(product);
 	}
 
+	static async findMultiple(ids) {
+		const productIds = ids.map(function (id) {
+			return new mongodb.ObjectId(id);
+		});
+		const products = await db
+			.getDb()
+			.collection("products")
+			.find({ _id: { $in: productIds } })
+			.toArray();
+
+		return products.map(function (productDocument) {
+			return new Product(productDocument);
+		});
+	}
+
 	updateImageData() {
 		this.imagePath = `product-data/images/${this.image}`;
 		this.imageUrl = `/products/assets/images/${this.image}`;
@@ -55,6 +69,7 @@ class Product {
 			.getDb()
 			.collection("products")
 			.findOne({ title: this.title });
+		if (existingProduct == null) return;
 		return new Product(existingProduct);
 	}
 

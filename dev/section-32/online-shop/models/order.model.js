@@ -1,85 +1,89 @@
 const mongodb = require("mongodb");
 const db = require("../data/database");
 
-const { ObjectId } = mongodb;
-
 class Order {
 	static validOrderStatuses = {
 		PENDING: "PENDING",
 		FULFILLED: "FULFILLED",
 		CANCELED: "CANCELED",
 	};
-	constructor(user, date, items, totalPrice, totalQuantity, status, id) {
-		this.user = user;
-		this.date = date;
-		this.items = items;
+	constructor(cart, userData, status = "pending", date, orderId) {
+		this.productData = cart;
+		this.userData = userData;
 		this.status = status;
-		this.totalPrice = parseFloat(Number(totalPrice).toFixed(2));
-		this.totalQuantity = parseInt(Number(totalQuantity).toFixed(0));
-		if (id) {
-			this.id = new ObjectId(id);
+		this.date = new Date(date);
+		if (this.date) {
+			this.formattedDate = this.date.toLocaleDateString("en-US", {
+				weekday: "short",
+				day: "numeric",
+				month: "long",
+				year: "numeric",
+			});
 		}
+		this.id = orderId;
 	}
 
-	static async getOrdersWithSameUser(userId) {
+	static async findAllForUser(userId) {
+		const uid = new mongodb.ObjectId(userId);
+
 		const orders = await db
 			.getDb()
 			.collection("orders")
-			.find({ "user.id": new ObjectId(userId) })
+			.find({ "userData._id": uid })
+			.sort({ _id: -1 })
 			.toArray();
-		return orders;
+
+		return this.transformOrderDocuments(orders);
 	}
 
-	static async fetchAll() {
-		const orders = await db.getDb().collection("orders").find({}).toArray();
-		return orders;
+	static transformOrderDocument(orderDoc) {
+		return new Order(
+			orderDoc.productData,
+			orderDoc.userData,
+			orderDoc.status,
+			orderDoc.date,
+			orderDoc._id
+		);
 	}
 
-	async fetch() {
+	static transformOrderDocuments(orderDocs) {
+		return orderDocs.map(this.transformOrderDocument);
+	}
+
+	static async findAll() {
+		const orders = await db
+			.getDb()
+			.collection("orders")
+			.find({})
+			.sort({ _id: -1 })
+			.toArray();
+		return this.transformOrderDocuments(orders);
+	}
+
+	static async findById(userId) {
 		const order = await db
 			.getDb()
 			.collection("orders")
-			.findOne({ _id: this.id });
-		if (order == null) return null;
-		this.user = order.user;
-		this.date = order.date;
-		this.items = order.items;
-		this.totalPrice = order.totalPrice;
-		this.totalQuantity = order.totalQuantity;
-		this.status = order.status;
+			.findOne({ _id: new mongodb.ObjectId(userId) });
+		return this.transformOrderDocument(order);
 	}
 
 	async save() {
-		if (!Order.validOrderStatuses.hasOwnProperty(this.status)) {
-			throw "Invalid status provided!!";
+		if (this.id) {
+			const orderId = new mongodb.ObjectId(this.id);
+			return db
+				.getDb()
+				.collection("orders")
+				.updateOne({ _id: orderId }, { $set: { status: this.status } });
+		} else {
+			const orderDocument = {
+				userData: this.userData,
+				productData: this.productData,
+				date: new Date(),
+				status: this.status,
+			};
+			return db.getDb().collection("orders").insertOne(orderDocument);
 		}
-		const result = await db.getDb().collection("orders").insertOne({
-			user: this.user,
-			date: this.date,
-			items: this.items,
-			totalPrice: this.totalPrice,
-			totalQuantity: this.totalQuantity,
-			status: this.status,
-		});
-		return result;
-	}
-
-	async updateStatus() {
-		if (!Order.validOrderStatuses.hasOwnProperty(this.status)) {
-			throw "Invalid status provided!!";
-		}
-		const result = await db
-			.getDb()
-			.collection("orders")
-			.updateOne(
-				{ _id: this.id },
-				{
-					$set: {
-						status: this.status,
-					},
-				}
-			);
-		return result;
 	}
 }
 

@@ -4,12 +4,10 @@ const makeSafe = require("../util/make.safe");
 
 const router = express.Router();
 
-router.get("/cart", makeSafe(cartController.getCart));
+router.get("/", makeSafe(cartController.getCart));
 
-router.post("/cart/add", makeSafe(cartController.addCartItem));
+router.post("/items", makeSafe(cartController.addCartItem));
 
-router.post("/cart/update", makeSafe(cartController.updateItemQuantity));
-
-router.post("/cart/deleteItem", makeSafe(cartController.removeItemFromCart));
+router.patch("/items", makeSafe(cartController.updateCartItem));
 
 module.exports = router;

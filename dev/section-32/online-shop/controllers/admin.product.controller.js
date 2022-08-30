@@ -58,7 +58,7 @@ async function createProduct(req, res) {
 		return;
 	}
 	const existingProduct = await product.getProductWithSameTitle();
-	if (existingProduct.id != null) {
+	if (existingProduct) {
 		sessionFlash.flashDataToSession(
 			req,
 			{

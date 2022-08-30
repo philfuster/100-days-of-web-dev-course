@@ -6,9 +6,6 @@ const router = express.Router();
 
 router.get("/orders", makeSafe(adminOrderController.getOrders));
 
-router.post(
-	"/orders/:id/updateStatus",
-	makeSafe(adminOrderController.updateOrderStatus)
-);
+router.patch("/orders/:id", makeSafe(adminOrderController.updateOrderStatus));
 
 module.exports = router;
